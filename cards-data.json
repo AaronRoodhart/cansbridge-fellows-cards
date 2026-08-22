@@ -1,0 +1,105 @@
+{
+  "fellows": [
+    {
+      "id": "seed0",
+      "name": "Amara Osei",
+      "subtitle": "Waterloo · Robotics",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed1",
+      "name": "Ravi Chandran",
+      "subtitle": "UBC · Fintech",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed2",
+      "name": "Jules Beaumont",
+      "subtitle": "McGill · Bio",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed3",
+      "name": "Sena Tanaka",
+      "subtitle": "UofT · ML",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed4",
+      "name": "Nadia Haddad",
+      "subtitle": "Queen's · Climate",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed5",
+      "name": "Tobi Adeyemi",
+      "subtitle": "Western · Design",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed6",
+      "name": "Clara Lindqvist",
+      "subtitle": "SFU · Health",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed7",
+      "name": "Mateo Rivas",
+      "subtitle": "Calgary · Space",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed8",
+      "name": "Priya Raman",
+      "subtitle": "Ottawa · Policy",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    },
+    {
+      "id": "seed9",
+      "name": "Owen Blackwood",
+      "subtitle": "Dal · Ocean tech",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/placeholder",
+      "cardImage": "",
+      "fullArtImage": "",
+      "demo": true
+    }
+  ],
+  "packArt": {}
+}

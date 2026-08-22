@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; background:#0A1024; overscroll-behavior:none; }
+  * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
+  a { color:#8FA0FF; text-decoration:none; }
+  a:hover { color:#B9C4FF; }
+  @keyframes fcFloat { 0%,100% { transform:translateY(0) rotate(-1deg);} 50% { transform:translateY(-10px) rotate(1deg);} }
+  @keyframes fcSheen { 0% { transform:translateX(-120%) rotate(18deg);} 100% { transform:translateX(220%) rotate(18deg);} }
+  @keyframes fcPulse { 0%,100% { opacity:.35; transform:scale(1);} 50% { opacity:.9; transform:scale(1.06);} }
+  @keyframes fcRise { from { opacity:0; transform:translateY(14px);} to { opacity:1; transform:translateY(0);} }
+  @keyframes fcGlow { 0%,100% { opacity:.5;} 50% { opacity:1;} }
+  @keyframes fcDealL { 0% { transform:translate(0,60px) rotate(0deg) scale(.82); opacity:0;} 25% { opacity:1;} 100% { transform:translate(-108px,-96px) rotate(-16deg) scale(1); opacity:1;} }
+  @keyframes fcDealC { 0% { transform:translate(0,60px) rotate(0deg) scale(.82); opacity:0;} 25% { opacity:1;} 100% { transform:translate(0,-138px) rotate(0deg) scale(1.05); opacity:1;} }
+  @keyframes fcDealR { 0% { transform:translate(0,60px) rotate(0deg) scale(.82); opacity:0;} 25% { opacity:1;} 100% { transform:translate(108px,-96px) rotate(16deg) scale(1); opacity:1;} }
+  @keyframes fcPackDrop { 0% { transform:translateY(0) rotate(0deg); opacity:1;} 100% { transform:translateY(70px) rotate(4deg); opacity:.25;} }
+  .fcScroll::-webkit-scrollbar { display:none; }
+</style>
+</helmet>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#0A1024"/><rect x="60" y="42" width="80" height="112" rx="10" fill="#2A2F86" stroke="#8FA0FF" stroke-width="2" transform="rotate(-8 100 98)"/><rect x="60" y="46" width="80" height="112" rx="10" fill="#5B6CFF" stroke="#B9C4FF" stroke-width="2" transform="rotate(6 100 102)"/><text x="100" y="112" font-family="monospace" font-size="26" fill="#fff" text-anchor="middle" transform="rotate(6 100 102)">CB</text></svg></template>
+<div style="min-height:100vh;background:radial-gradient(120% 80% at 50% -10%,#16204A 0%,#0A1024 55%);color:#E7EAF6;font-family:'Instrument Sans',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;overflow-x:hidden">
+
+<sc-if value="{{ isPacks }}" hint-placeholder-val="{{ true }}">
+  <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;padding:22px 20px 34px;gap:22px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8FA0FF">CANSBRIDGE</div>
+        <div style="font-size:19px;font-weight:600;letter-spacing:-.01em">Fellow Cards</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onClick="{{ toggleSound }}" style="width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">{{ soundIcon }}</button>
+        <button onClick="{{ goGallery }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Gallery</button>
+        <button onClick="{{ goAdmin }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(143,160,255,.35);background:rgba(91,108,255,.14);color:#B9C4FF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(91,108,255,.28)">⚙️ Admin / Upload</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px;padding-top:6px">
+      <h1 style="margin:0;font-size:34px;line-height:1.08;letter-spacing:-.03em;font-weight:600;text-wrap:balance">Meet the fellows</h1>
+      <p style="margin:0;font-size:15px;line-height:1.5;color:#98A0BA;max-width:34ch;text-wrap:pretty">Pick a cohort, tear the pack open, and swipe through everyone inside.</p>
+    </div>
+
+    <div class="fcScroll" style="display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 0 6px;margin:0 -20px;scrollbar-width:none">
+      <div style="flex:none;width:20px"></div>
+      <sc-for list="{{ packList }}" as="p" hint-placeholder-count="2">
+        <div onClick="{{ p.select }}" style="flex:none;width:212px;scroll-snap-align:center;display:flex;flex-direction:column;gap:14px;cursor:pointer">
+          <div style="position:relative;width:212px;height:297px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 60px -28px rgba(0,0,0,.9),0 0 0 1px rgba(143,160,255,.12) inset;animation:fcFloat 7s ease-in-out infinite">
+            <sc-if value="{{ p.hasArt }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ p.art }}" alt="Pack artwork" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            </sc-if>
+            <sc-if value="{{ p.noArt }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+                <div style="width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.8)">CB</div>
+                <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.24em;color:rgba(255,255,255,.7)">{{ p.year }}</div>
+              </div>
+            </sc-if>
+            <div style="position:absolute;top:0;bottom:0;left:0;width:36%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);animation:fcSheen 4.5s linear infinite;pointer-events:none"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;padding:0 2px">
+            <div style="font-size:17px;font-weight:600">{{ p.title }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2">{{ p.meta }}</div>
+          </div>
+        </div>
+      </sc-for>
+      <div style="flex:none;width:20px"></div>
+    </div>
+
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+      <sc-if value="{{ hasPacks }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ openFirst }}" style="height:54px;border-radius:16px;border:none;background:#5B6CFF;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 16px 34px -14px rgba(91,108,255,.9)" style-hover="background:#6D7CFF">Open a pack</button>
+      </sc-if>
+      <sc-if value="{{ noPacks }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:20px;border:1px dashed rgba(255,255,255,.2);border-radius:16px;text-align:center;font-size:14px;line-height:1.55;color:#98A0BA">No fellows uploaded yet. Add them in the admin panel, then come back.</div>
+      </sc-if>
+      <div style="text-align:center;font-family:'Space Mono',monospace;font-size:11px;color:#5C6486">{{ progressLine }}</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;padding:22px 20px 40px;gap:16px;touch-action:none;user-select:none">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <button onClick="{{ goPacks }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Back</button>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:#7A83A2">{{ cohortTitle }}</div>
+      <div style="width:64px"></div>
+    </div>
+
+    <div onPointerDown="{{ tearDown }}" onPointerMove="{{ tearMove }}" onPointerUp="{{ tearUp }}" onPointerCancel="{{ tearUp }}" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+      <div style="position:relative;width:min(78vw,272px);aspect-ratio:5/7">
+        <div style="{{ packTopStyle }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          </sc-if>
+        </div>
+        <div style="{{ packBottomStyle }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          </sc-if>
+          <div style="position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);animation:fcSheen 5s linear infinite;pointer-events:none"></div>
+        </div>
+        <div style="{{ tearLineStyle }}"></div>
+        <div style="{{ grabberStyle }}">
+          <div style="width:14px;height:2px;background:#0A1024;border-radius:2px"></div>
+          <div style="width:6px;height:2px;background:#0A1024;border-radius:2px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center">
+      <div style="font-size:15px;color:#98A0BA;letter-spacing:.01em">{{ tearHint }}</div>
+      <div style="width:160px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden">
+        <div style="{{ tearBarStyle }}"></div>
+      </div>
+      <button onClick="{{ forceOpen }}" style="height:40px;padding:0 18px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#8B93AD;font-size:13px;cursor:pointer" style-hover="color:#E7EAF6;border-color:rgba(255,255,255,.3)">Open without swiping</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isDealing }}" hint-placeholder-val="{{ false }}">
+  <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px;gap:16px;overflow:hidden">
+    <div style="position:relative;width:min(78vw,272px);aspect-ratio:5/7;display:flex;align-items:center;justify-content:center">
+      <div style="position:absolute;inset:0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);animation:fcPackDrop .9s cubic-bezier(.4,0,.6,1) forwards">
+        <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+        <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+        </sc-if>
+      </div>
+      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#3A44B8,#141A3E 65%);border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 40px -16px #000;animation:fcDealL .62s cubic-bezier(.2,.85,.3,1) .04s both"></div>
+      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#3A44B8,#141A3E 65%);border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 40px -16px #000;animation:fcDealR .62s cubic-bezier(.2,.85,.3,1) .12s both"></div>
+      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#4A55D8,#1A2050 65%);border:1px solid rgba(255,255,255,.3);box-shadow:0 26px 50px -18px #000;animation:fcDealC .62s cubic-bezier(.2,.85,.3,1) .2s both;display:flex;align-items:center;justify-content:center">
+        <div style="width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;color:rgba(255,255,255,.75)">CB</div>
+      </div>
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8FA0FF">{{ dealingLabel }}</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isReveal }}" hint-placeholder-val="{{ false }}">
+  <div style="{{ revealStageStyle }}">
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+      <button onClick="{{ goPacks }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Close</button>
+      <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;color:#98A0BA">{{ counter }}</div>
+      <button onClick="{{ skipToEnd }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Skip</button>
+    </div>
+
+    <div onPointerDown="{{ cardDown }}" onPointerMove="{{ cardMove }}" onPointerUp="{{ cardUp }}" onPointerCancel="{{ cardUp }}" onClick="{{ cardTap }}" style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none;user-select:none;cursor:pointer">
+      <div style="position:absolute;width:min(70vw,258px);aspect-ratio:5/7;border-radius:16px;background:rgba(255,255,255,.05);transform:translateY(16px) scale(.9)"></div>
+      <div style="position:absolute;width:min(70vw,258px);aspect-ratio:5/7;border-radius:16px;background:rgba(255,255,255,.08);transform:translateY(8px) scale(.95)"></div>
+      <div style="{{ cardStyle }}">
+        <div style="{{ cardFrontStyle }}">
+          <sc-if value="{{ curHasImage }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ curImage }}" alt="{{ curName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          </sc-if>
+          <sc-if value="{{ curNoImage }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;gap:6px">
+              <div style="font-size:22px;font-weight:600;line-height:1.15">{{ curName }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.55)">{{ curSub }}</div>
+            </div>
+          </sc-if>
+          <div style="{{ foilStyle }}"></div>
+        </div>
+      </div>
+      <div style="{{ fullArtBadgeStyle }}">FULL ART</div>
+    </div>
+
+    <div style="{{ footerStyle }}">
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+        <div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ curName }}</div>
+        <div style="font-size:13px;color:#98A0BA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ curSub }}</div>
+      </div>
+      <a href="{{ curLink }}" target="_blank" rel="noopener" style="flex:none;display:flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:12px;background:rgba(91,108,255,.16);border:1px solid rgba(143,160,255,.45);color:#B9C4FF;font-size:13px;font-weight:600">
+        <span style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;background:#B9C4FF;color:#0A1024;font-size:10px;font-weight:700;font-family:'Space Mono',monospace">in</span>
+        Profile
+      </a>
+    </div>
+    <div style="font-size:13px;color:#5C6486;letter-spacing:.01em">{{ revealHint }}</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+  <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;padding:26px 20px 34px;gap:22px;animation:fcRise .4s ease">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8FA0FF">PACK OPENED</div>
+      <h2 style="margin:0;font-size:30px;line-height:1.1;letter-spacing:-.025em;font-weight:600">{{ summaryLine }}</h2>
+      <p style="margin:0;font-size:15px;color:#98A0BA;line-height:1.5">{{ summarySub }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <sc-for list="{{ pulled }}" as="c" hint-placeholder-count="6">
+        <div onClick="{{ c.open }}" style="aspect-ratio:5/7;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+          <sc-if value="{{ c.hasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ c.image }}" alt="{{ c.name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+          <sc-if value="{{ c.noImage }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;align-items:flex-end;padding:8px;font-size:11px;font-weight:600;line-height:1.2">{{ c.name }}</div></sc-if>
+          <div style="{{ c.ring }}"></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+      <button onClick="{{ goGallery }}" style="height:52px;border-radius:16px;border:none;background:#5B6CFF;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 16px 34px -14px rgba(91,108,255,.9)">See the full gallery</button>
+      <button onClick="{{ goPacks }}" style="height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#C9D0E6;font-family:'Instrument Sans',sans-serif;font-size:15px;cursor:pointer">Open another pack</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isGallery }}" hint-placeholder-val="{{ false }}">
+  <div style="width:100%;max-width:900px;min-height:100vh;display:flex;flex-direction:column;padding:22px 20px 40px;gap:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="font-size:20px;font-weight:600;letter-spacing:-.015em">Gallery</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2">{{ galleryCount }}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onClick="{{ goAdmin }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(143,160,255,.35);background:rgba(91,108,255,.14);color:#B9C4FF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(91,108,255,.28)">⚙️ Admin / Upload</button>
+        <button onClick="{{ goPacks }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Packs</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{ cohortTabs }}" as="t" hint-placeholder-count="2">
+        <button onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px">
+      <sc-for list="{{ galleryCards }}" as="g" hint-placeholder-count="9">
+        <div onClick="{{ g.open }}" style="display:flex;flex-direction:column;gap:8px;cursor:pointer">
+          <div style="{{ g.tileStyle }}">
+            <sc-if value="{{ g.hasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ g.image }}" alt="{{ g.name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+            <sc-if value="{{ g.noImage }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%)"></div></sc-if>
+            <div style="{{ g.ring }}"></div>
+          </div>
+          <div style="font-size:12px;line-height:1.25;color:#B4BBD2;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ g.name }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ galleryEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:40px 20px;border:1px dashed rgba(255,255,255,.16);border-radius:16px;text-align:center;font-size:14px;color:#98A0BA;line-height:1.6">Nothing here yet. Upload fellows in the admin panel.</div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;z-index:60;background:rgba(6,9,22,.88);backdrop-filter:blur(14px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 20px">
+    <div style="width:min(72vw,270px);aspect-ratio:5/7;border-radius:16px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.18);box-shadow:0 40px 80px -30px #000">
+      <sc-if value="{{ detailHasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ detailImage }}" alt="{{ detailName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+      <sc-if value="{{ detailNoImage }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;align-items:flex-end;padding:20px;font-size:22px;font-weight:600">{{ detailName }}</div></sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:19px;font-weight:600">{{ detailName }}</div>
+      <div style="font-size:13px;color:#98A0BA">{{ detailSub }}</div>
+    </div>
+    <a href="{{ detailLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:14px;background:rgba(91,108,255,.18);border:1px solid rgba(143,160,255,.45);color:#B9C4FF;font-size:14px;font-weight:600">
+      <span style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;background:#B9C4FF;color:#0A1024;font-size:10px;font-weight:700;font-family:'Space Mono',monospace">in</span>
+      View LinkedIn
+    </a>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:#5C6486;padding-top:6px">Tap anywhere to close</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+  <div style="width:100%;max-width:820px;min-height:100vh;display:flex;flex-direction:column;padding:26px 20px 60px;gap:26px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8FA0FF">ADMIN · /#admin</div>
+        <div style="font-size:22px;font-weight:600;letter-spacing:-.015em">Cards &amp; packs</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onClick="{{ saveCardsData }}" style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(143,160,255,.6);background:rgba(91,108,255,.25);color:#DCE2FF;font-size:13px;font-weight:600;cursor:pointer">💾 Save cards-data.json</button>
+        <button onClick="{{ exportData }}" style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Export</button>
+        <label style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer;display:flex;align-items:center">Import<input type="file" accept="application/json" onChange="{{ importData }}" style="display:none" /></label>
+        <button onClick="{{ goPacks }}" style="height:38px;padding:0 14px;border-radius:12px;border:none;background:#5B6CFF;color:#fff;font-size:13px;font-weight:600;cursor:pointer">View app</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.02)">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">ADD A FELLOW</div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px">
+        <label style="{{ wellA }}">
+          <sc-if value="{{ draftHasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ draftImg }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none">
+            <div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(143,160,255,.7)"></div>
+            <div style="font-size:12px;color:#B4BBD2;font-weight:500">Standard card</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#7A83A2">5:7 image</div>
+          </div>
+          <input type="file" accept="image/*" onChange="{{ pickCard }}" style="display:none" />
+        </label>
+        <label style="{{ wellB }}">
+          <sc-if value="{{ draftHasFull }}" hint-placeholder-val="{{ false }}"><img src="{{ draftFull }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none">
+            <div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(143,160,255,.7)"></div>
+            <div style="font-size:12px;color:#B4BBD2;font-weight:500">Full-art version</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#7A83A2">5:7 image</div>
+          </div>
+          <input type="file" accept="image/*" onChange="{{ pickFull }}" style="display:none" />
+        </label>
+        <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:10px">
+          <input value="{{ draftName }}" onInput="{{ setName }}" placeholder="Full name" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
+          <input value="{{ draftSub }}" onInput="{{ setSub }}" placeholder="Role, school or fun fact" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
+          <input value="{{ draftUrl }}" onInput="{{ setUrl }}" placeholder="https://linkedin.com/in/…" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
+          <div style="display:flex;gap:10px">
+            <input value="{{ draftCohort }}" onInput="{{ setCohort }}" placeholder="Cohort year" style="width:130px;height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
+            <button onClick="{{ addFellow }}" style="flex:1;height:44px;border-radius:12px;border:none;background:#5B6CFF;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer">Add fellow</button>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#7A83A2;line-height:1.5">You can also drop several images at once below — each becomes a draft card named from its filename.</div>
+      <label style="height:70px;border-radius:14px;border:1px dashed rgba(143,160,255,.45);background:rgba(91,108,255,.06);display:flex;align-items:center;justify-content:center;font-size:14px;color:#B4BBD2;cursor:pointer">
+        Bulk add standard cards
+        <input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ bulkAdd }}" style="display:none" />
+      </label>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.02)">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">PACK ARTWORK</div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px">
+        <sc-for list="{{ adminPacks }}" as="ap" hint-placeholder-count="1">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="{{ ap.wellStyle }}">
+              <sc-if value="{{ ap.hasArt }}" hint-placeholder-val="{{ false }}"><img src="{{ ap.art }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+              <sc-if value="{{ ap.noArt }}" hint-placeholder-val="{{ true }}"><div style="position:relative;font-size:12px;color:#B4BBD2">Upload art</div></sc-if>
+              <input type="file" accept="image/*" onChange="{{ ap.pick }}" style="display:none" />
+            </label>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2;text-align:center">{{ ap.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">FELLOWS · {{ fellowCount }}</div>
+      <sc-for list="{{ adminFellows }}" as="f" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.02)">
+          <div style="flex:none;width:40px;height:56px;border-radius:7px;overflow:hidden;position:relative;background:linear-gradient(165deg,#2B3480,#101636 70%)">
+            <sc-if value="{{ f.hasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ f.image }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
+          </div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <div style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.meta }}</div>
+          </div>
+          <label style="{{ f.fullStyle }}">{{ f.fullLabel }}<input type="file" accept="image/*" onChange="{{ f.pickFull }}" style="display:none" /></label>
+          <button onClick="{{ f.remove }}" style="flex:none;width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#8B93AD;font-size:15px;cursor:pointer" style-hover="color:#FF8095;border-color:rgba(255,128,149,.4)">×</button>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:6px">
+      <div style="font-size:13px;color:#5C6486;line-height:1.5">Stored in this browser. Export before switching devices.</div>
+      <button onClick="{{ resetProgress }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#8B93AD;font-size:13px;cursor:pointer">Reset opened progress</button>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:860},&quot;fullArtOdds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:15,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:1,&quot;max&quot;:60,&quot;step&quot;:1,&quot;unit&quot;:&quot;%&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
+const DB_KEY = "fellowcards.v1";
+
+class Component extends DCLogic {
+  state = {
+    view: "packs", fellows: [], packArt: {}, opened: {}, fullSeen: {},
+    cohort: null, deck: [], idx: 0, flipped: false, tear: 0, dragging: false,
+    cardDrag: 0, tilt: { x: 0, y: 0 }, sound: false, detail: null, galleryCohort: null,
+    draft: { name: "", sub: "", url: "", cohort: "2026", img: "", full: "" }
+  };
+
+  componentDidMount() {
+    this.load();
+    this.onHash = () => {
+      const h = (location.hash || "").toLowerCase();
+      if (h.indexOf("admin") >= 0) this.setState({ view: "admin" });
+      else if (this.state.view === "admin") this.setState({ view: "packs" });
+    };
+    window.addEventListener("hashchange", this.onHash);
+    this.onHash();
+  }
+  componentWillUnmount() { window.removeEventListener("hashchange", this.onHash); }
+
+  // ---- storage ----
+  db() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open("fellowcards", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async load() {
+    const loadFromStatic = async () => {
+      try {
+        const res = await fetch("cards-data.json");
+        if (res.ok) {
+          const d = await res.json();
+          if (d && ((d.fellows && d.fellows.length) || (d.packArt && Object.keys(d.packArt).length))) {
+            this.setState({ fellows: d.fellows || [], packArt: d.packArt || {} });
+            return true;
+          }
+        }
+      } catch (e) {}
+      return false;
+    };
+
+    try {
+      const db = await this.db();
+      const tx = db.transaction("kv", "readonly").objectStore("kv").get(DB_KEY);
+      tx.onsuccess = async () => {
+        const d = tx.result;
+        if (d && ((d.fellows && d.fellows.length) || (d.packArt && Object.keys(d.packArt).length))) {
+          this.setState({ fellows: d.fellows, packArt: d.packArt || {}, opened: d.opened || {}, fullSeen: d.fullSeen || {} });
+        } else {
+          const loaded = await loadFromStatic();
+          if (!loaded) this.setState({ fellows: this.seed() });
+        }
+      };
+      tx.onerror = async () => {
+        const loaded = await loadFromStatic();
+        if (!loaded) this.setState({ fellows: this.seed() });
+      };
+    } catch (e) {
+      const loaded = await loadFromStatic();
+      if (!loaded) this.setState({ fellows: this.seed() });
+    }
+  }
+  seed() {
+    return ["Amara Osei","Ravi Chandran","Jules Beaumont","Sena Tanaka","Nadia Haddad","Tobi Adeyemi","Clara Lindqvist","Mateo Rivas","Priya Raman","Owen Blackwood"].map((n, i) => ({
+      id: "seed" + i, name: n, subtitle: ["Waterloo · Robotics","UBC · Fintech","McGill · Bio","UofT · ML","Queen's · Climate","Western · Design","SFU · Health","Calgary · Space","Ottawa · Policy","Dal · Ocean tech"][i],
+      cohort: "2026", linkedinUrl: "https://www.linkedin.com/in/placeholder", cardImage: "", fullArtImage: "", demo: true
+    }));
+  }
+  save(patch) {
+    this.setState(patch, () => {
+      const { fellows, packArt, opened, fullSeen } = this.state;
+      this.db().then(db => db.transaction("kv", "readwrite").objectStore("kv").put({ fellows, packArt, opened, fullSeen }, DB_KEY)).catch(() => {});
+    });
+  }
+
+  // ---- sound ----
+  ac() { if (!this._ac) this._ac = new (window.AudioContext || window.webkitAudioContext)(); return this._ac; }
+  beep(type) {
+    if (!this.state.sound) return;
+    try {
+      const ac = this.ac(); const t = ac.currentTime;
+      if (type === "crinkle") {
+        const b = ac.createBuffer(1, 2400, ac.sampleRate), d = b.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length) * 0.35;
+        const s = ac.createBufferSource(); s.buffer = b;
+        const f = ac.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 2400;
+        s.connect(f); f.connect(ac.destination); s.start();
+      } else if (type === "chime") {
+        [660, 880, 1320].forEach((hz, i) => {
+          const o = ac.createOscillator(), g = ac.createGain();
+          o.frequency.value = hz; o.type = "triangle";
+          g.gain.setValueAtTime(0.0001, t + i * 0.09);
+          g.gain.exponentialRampToValueAtTime(0.16, t + i * 0.09 + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.09 + 0.5);
+          o.connect(g); g.connect(ac.destination); o.start(t + i * 0.09); o.stop(t + i * 0.09 + 0.55);
+        });
+      } else {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.frequency.value = type === "flip" ? 520 : 320; o.type = "square";
+        g.gain.setValueAtTime(0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+        o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.1);
+      }
+    } catch (e) {}
+  }
+
+  // ---- helpers ----
+  cohorts() {
+    const set = {};
+    this.state.fellows.forEach(f => { set[f.cohort] = (set[f.cohort] || 0) + 1; });
+    return Object.keys(set).sort().reverse().map(y => ({ year: y, count: set[y] }));
+  }
+  inCohort(y) { return this.state.fellows.filter(f => f.cohort === y); }
+  readImg(file) {
+    return new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); });
+  }
+
+  startPack(year) {
+    const rate = (this.props.fullArtOdds ?? 15) / 100;
+    const list = this.inCohort(year).slice();
+    for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = list[i]; list[i] = list[j]; list[j] = t; }
+    const canFull = f => !!(f.fullArtImage || (!f.cardImage && f.demo));
+    let deck = list.map(f => ({ id: f.id, full: canFull(f) && Math.random() < rate }));
+    if (deck.length && !deck.some(c => c.full)) {
+      const cands = deck.filter(c => { const f = this.byId(c.id); return f && canFull(f); });
+      if (cands.length) cands[Math.floor(Math.random() * cands.length)].full = true;
+    }
+    this.setState({ view: "open", cohort: year, deck, idx: 0, flipped: false, tear: 0, cardDrag: 0 });
+  }
+  byId(id) { return this.state.fellows.filter(f => f.id === id)[0]; }
+  cur() { const c = this.state.deck[this.state.idx]; return c ? { c, f: this.byId(c.id) } : null; }
+
+  completeOpen() {
+    this.beep("crinkle");
+    const d = this.state.deck;
+    if (!d.length) { this.setState({ view: "summary", tear: 1 }); return; }
+    this.setState({ view: "dealing", tear: 1, idx: 0 });
+    clearTimeout(this._dealT);
+    this._dealT = setTimeout(() => {
+      this.setState({ view: "reveal", entering: true }, () => {
+        this.mark(0);
+        setTimeout(() => this.setState({ entering: false }), 30);
+      });
+    }, 950);
+  }
+  mark(i) {
+    const c = this.state.deck[i]; if (!c) return;
+    const o = Object.assign({}, this.state.opened); o[c.id] = true;
+    const fs = Object.assign({}, this.state.fullSeen); if (c.full) fs[c.id] = true;
+    this.beep(c.full ? "chime" : "tick");
+    this.save({ opened: o, fullSeen: fs });
+  }
+  next() {
+    const { idx, deck } = this.state;
+    if (idx + 1 >= deck.length) { this.setState({ view: "summary", cardDrag: 0 }); return; }
+    this.setState({ idx: idx + 1, cardDrag: 0, entering: true, tilt: { x: 0, y: 0 } }, () => {
+      this.mark(idx + 1);
+      setTimeout(() => this.setState({ entering: false }), 30);
+    });
+  }
+  skipToEnd() {
+    const o = Object.assign({}, this.state.opened), fs = Object.assign({}, this.state.fullSeen);
+    this.state.deck.forEach(c => { o[c.id] = true; if (c.full) fs[c.id] = true; });
+    this.save({ opened: o, fullSeen: fs, view: "summary" });
+  }
+
+  renderVals() {
+    const s = this.state, cur = this.cur(), cohorts = this.cohorts();
+    const gc = s.galleryCohort || (cohorts[0] && cohorts[0].year);
+    const total = s.fellows.length, openedN = Object.keys(s.opened).length;
+
+    const packList = cohorts.map(c => ({
+      year: c.year, title: c.year + " Fellows",
+      meta: c.count + " cards · " + (this.inCohort(c.year).filter(f => s.opened[f.id]).length) + " opened",
+      art: s.packArt[c.year] || "", hasArt: !!s.packArt[c.year], noArt: !s.packArt[c.year],
+      select: () => this.startPack(c.year)
+    }));
+
+    const pctTear = Math.max(0, Math.min(1, s.tear));
+    const clipTop = "polygon(0 0,100% 0,100% 17%,0 17%)";
+    const clipBot = "polygon(0 17%,100% 17%,100% 100%,0 100%)";
+    const base = { position: "absolute", inset: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(255,255,255,.14)" };
+
+    const flipDeg = s.flipped ? 180 : 0;
+    const isFull = cur && cur.c.full;
+    const face = { position: "absolute", inset: 0, borderRadius: 16, overflow: "hidden", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" };
+
+    const detailF = s.detail ? this.byId(s.detail) : null;
+    const detailFull = detailF && s.fullSeen[detailF.id] && detailF.fullArtImage;
+
+    const galleryCards = this.inCohort(gc).map(f => {
+      const isOpen = !!s.opened[f.id], full = s.fullSeen[f.id] && f.fullArtImage;
+      const img = full ? f.fullArtImage : f.cardImage;
+      return {
+        name: f.name, image: img || "", hasImage: !!img, noImage: !img,
+        tileStyle: { position: "relative", aspectRatio: "5/7", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,.12)", opacity: isOpen ? 1 : 0.32, filter: isOpen ? "none" : "grayscale(.7)", transition: "opacity .25s,filter .25s" },
+        ring: { position: "absolute", inset: 0, borderRadius: 10, boxShadow: full ? "0 0 0 1.5px rgba(185,196,255,.9) inset, 0 0 22px rgba(143,160,255,.5)" : "none", pointerEvents: "none" },
+        open: () => this.setState({ detail: f.id })
+      };
+    });
+
+    const pulled = s.deck.map(c => {
+      const f = this.byId(c.id); if (!f) return null;
+      const img = c.full && f.fullArtImage ? f.fullArtImage : f.cardImage;
+      return {
+        name: f.name, image: img || "", hasImage: !!img, noImage: !img,
+        ring: { position: "absolute", inset: 0, borderRadius: 10, boxShadow: c.full ? "0 0 0 1.5px rgba(185,196,255,.9) inset,0 0 20px rgba(143,160,255,.45)" : "none", pointerEvents: "none" },
+        open: () => this.setState({ detail: f.id })
+      };
+    }).filter(Boolean);
+
+    const wellBase = { position: "relative", width: 118, height: 165, borderRadius: 12, border: "1px dashed rgba(143,160,255,.5)", background: "rgba(91,108,255,.07)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", flex: "none" };
+
+    const yearSet = new Set();
+    cohorts.forEach(c => yearSet.add(c.year));
+    Object.keys(s.packArt || {}).forEach(y => yearSet.add(y));
+    if (s.draft.cohort) yearSet.add(s.draft.cohort.trim());
+    if (yearSet.size === 0) yearSet.add("2026");
+    const adminYears = Array.from(yearSet).sort().reverse();
+
+    return {
+      isPacks: s.view === "packs", isOpen: s.view === "open", isReveal: s.view === "reveal",
+      isSummary: s.view === "summary", isGallery: s.view === "gallery", isAdmin: s.view === "admin",
+      hasPacks: cohorts.length > 0, noPacks: cohorts.length === 0,
+      packList, progressLine: total ? openedN + " of " + total + " fellows met" : "Add fellows at #admin",
+      soundIcon: s.sound ? "♪" : "♪̶",
+      toggleSound: () => { const on = !s.sound; this.setState({ sound: on }, () => on && this.beep("tick")); },
+      goAdmin: () => { location.hash = "admin"; this.setState({ view: "admin" }); },
+      goGallery: () => this.setState({ view: "gallery", galleryCohort: gc || s.cohort }),
+      goPacks: () => { if (location.hash) location.hash = ""; this.setState({ view: "packs", detail: null }); },
+      openFirst: () => this.startPack(cohorts[0].year),
+
+      cohortTitle: s.cohort ? s.cohort + " Fellows" : "",
+      packArt: s.packArt[s.cohort] || "", packHasArt: !!s.packArt[s.cohort],
+      packTopStyle: Object.assign({}, base, { clipPath: clipTop, WebkitClipPath: clipTop, transform: "translateX(" + (pctTear * 118) + "%) rotate(" + (pctTear * 7) + "deg)", transition: s.dragging ? "none" : "transform .42s cubic-bezier(.2,.9,.25,1)", zIndex: 3 }),
+      packBottomStyle: Object.assign({}, base, { clipPath: clipBot, WebkitClipPath: clipBot }),
+      tearLineStyle: { position: "absolute", left: 0, right: 0, top: "17%", height: 2, background: "repeating-linear-gradient(90deg,rgba(255,255,255,.85) 0 6px,transparent 6px 12px)", opacity: 1 - pctTear, zIndex: 4, pointerEvents: "none" },
+      grabberStyle: { position: "absolute", left: "8%", top: "10%", width: 36, height: 36, borderRadius: "50%", background: "#E7EAF6", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, zIndex: 5, opacity: 1 - pctTear, animation: "fcPulse 2.2s ease-in-out infinite", pointerEvents: "none" },
+      tearBarStyle: { width: (pctTear * 100) + "%", height: "100%", background: "#5B6CFF", transition: s.dragging ? "none" : "width .3s" },
+      tearHint: pctTear > 0.55 ? "Keep going…" : "Drag the tab across to tear",
+      tearDown: e => { this._x0 = e.clientX; this.setState({ dragging: true }); e.currentTarget.setPointerCapture && e.currentTarget.setPointerCapture(e.pointerId); },
+      tearMove: e => {
+        if (!s.dragging) return;
+        const w = e.currentTarget.getBoundingClientRect().width * 0.55;
+        const p = Math.max(0, Math.min(1, (e.clientX - this._x0) / w));
+        if (Math.abs(p - s.tear) > 0.02 && Math.random() > 0.7) this.beep("crinkle");
+        this.setState({ tear: p });
+      },
+      tearUp: () => { if (!s.dragging) return; if (s.tear >= 0.75) this.completeOpen(); else this.setState({ dragging: false, tear: 0 }); },
+      forceOpen: () => this.completeOpen(),
+
+      counter: cur ? (s.idx + 1) + " / " + s.deck.length : "",
+      isDealing: s.view === "dealing",
+      dealingLabel: "OPENING " + (s.cohort || ""),
+      revealStageStyle: { width: "100%", maxWidth: 520, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", padding: "22px 20px 30px", gap: 16, background: isFull ? "radial-gradient(90% 55% at 50% 45%,rgba(91,108,255,.35),transparent 70%)" : "transparent", transition: "background .6s" },
+      cardStyle: {
+        position: "relative", width: "min(70vw,258px)", aspectRatio: "5/7",
+        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.03) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
+        opacity: s.entering ? 0 : 1,
+        transition: s.cardDrag ? "none" : "transform .42s cubic-bezier(.2,.9,.3,1.03),opacity .3s ease",
+        filter: isFull ? "drop-shadow(0 0 34px rgba(143,160,255,.6))" : "drop-shadow(0 24px 40px rgba(0,0,0,.7))"
+      },
+      cardFrontStyle: Object.assign({}, face, { border: isFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
+      foilStyle: { position: "absolute", inset: 0, background: isFull ? "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 30%,rgba(255,255,255,.35) 48%,rgba(143,160,255,.3) 56%,transparent 72%)" : "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%)", pointerEvents: "none", mixBlendMode: "screen" },
+      fullArtBadgeStyle: { position: "absolute", top: 6, fontFamily: "'Space Mono',monospace", fontSize: 10, letterSpacing: ".22em", color: "#B9C4FF", opacity: isFull && !s.entering ? 1 : 0, visibility: isFull ? "visible" : "hidden", transition: "opacity .4s", animation: isFull && !s.entering ? "fcGlow 2.4s ease-in-out infinite" : "none", pointerEvents: "none" },
+      curName: cur && cur.f ? cur.f.name : "",
+      curSub: cur && cur.f ? (cur.f.subtitle || (cur.f.cohort + " Fellow")) : "",
+      curLink: cur && cur.f ? (cur.f.linkedinUrl || "https://www.linkedin.com/") : "#",
+      curImage: cur && cur.f ? ((cur.c.full && cur.f.fullArtImage) ? cur.f.fullArtImage : (cur.f.cardImage || "")) : "",
+      curHasImage: !!(cur && cur.f && (cur.c.full && cur.f.fullArtImage ? cur.f.fullArtImage : cur.f.cardImage)),
+      curNoImage: !(cur && cur.f && (cur.c.full && cur.f.fullArtImage ? cur.f.fullArtImage : cur.f.cardImage)),
+      footerStyle: { width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 14px", borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", opacity: s.entering ? 0 : 1, transform: s.entering ? "translateY(8px)" : "translateY(0)", transition: "opacity .35s,transform .35s" },
+      revealHint: s.idx + 1 >= s.deck.length ? "Swipe or tap to finish" : "Swipe or tap for the next card",
+      cardTap: () => { if (this._swiped) { this._swiped = false; return; } this.next(); },
+      cardDown: e => { this._cx = e.clientX; this._cdrag = true; },
+      cardMove: e => {
+        const r = e.currentTarget.getBoundingClientRect();
+        const tx = ((e.clientX - r.left) / r.width - 0.5) * 16, ty = ((e.clientY - r.top) / r.height - 0.5) * -12;
+        if (this._cdrag) this.setState({ cardDrag: e.clientX - this._cx, tilt: { x: tx, y: ty } });
+        else this.setState({ tilt: { x: tx, y: ty } });
+      },
+      cardUp: () => {
+        this._cdrag = false;
+        if (Math.abs(s.cardDrag) > 70) { this._swiped = true; this.next(); }
+        else { this._swiped = Math.abs(s.cardDrag) > 6; this.setState({ cardDrag: 0 }); }
+      },
+      skipToEnd: () => this.skipToEnd(),
+
+      pulled, summaryLine: s.deck.length + " fellows, met",
+      summarySub: "Tap any card to open its LinkedIn, or jump into the full gallery.",
+
+      galleryCards, galleryEmpty: galleryCards.length === 0,
+      galleryCount: openedN + " of " + total + " opened",
+      cohortTabs: cohorts.map(c => ({
+        label: c.year, select: () => this.setState({ galleryCohort: c.year }),
+        style: { height: 34, padding: "0 14px", borderRadius: 10, border: "1px solid " + (c.year === gc ? "rgba(143,160,255,.6)" : "rgba(255,255,255,.12)"), background: c.year === gc ? "rgba(91,108,255,.18)" : "transparent", color: c.year === gc ? "#B9C4FF" : "#8B93AD", fontFamily: "'Space Mono',monospace", fontSize: 12, cursor: "pointer" }
+      })),
+
+      hasDetail: !!detailF,
+      detailName: detailF ? detailF.name : "",
+      detailSub: detailF ? (detailF.subtitle || detailF.cohort + " Fellow") : "",
+      detailLink: detailF ? (detailF.linkedinUrl || "https://www.linkedin.com/") : "#",
+      detailImage: detailF ? (detailFull ? detailF.fullArtImage : detailF.cardImage || "") : "",
+      detailHasImage: !!(detailF && (detailFull ? detailF.fullArtImage : detailF.cardImage)),
+      detailNoImage: !(detailF && (detailFull ? detailF.fullArtImage : detailF.cardImage)),
+      closeDetail: () => this.setState({ detail: null }),
+
+      draftName: s.draft.name, draftSub: s.draft.sub, draftUrl: s.draft.url, draftCohort: s.draft.cohort,
+      draftImg: s.draft.img, draftFull: s.draft.full, draftHasImg: !!s.draft.img, draftHasFull: !!s.draft.full,
+      wellA: wellBase, wellB: Object.assign({}, wellBase, { borderStyle: s.draft.full ? "solid" : "dashed" }),
+      setName: e => this.setState({ draft: Object.assign({}, s.draft, { name: e.target.value }) }),
+      setSub: e => this.setState({ draft: Object.assign({}, s.draft, { sub: e.target.value }) }),
+      setUrl: e => this.setState({ draft: Object.assign({}, s.draft, { url: e.target.value }) }),
+      setCohort: e => this.setState({ draft: Object.assign({}, s.draft, { cohort: e.target.value }) }),
+      pickCard: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); this.setState({ draft: Object.assign({}, this.state.draft, { img: d }) }); },
+      pickFull: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); this.setState({ draft: Object.assign({}, this.state.draft, { full: d }) }); },
+      addFellow: () => {
+        const d = this.state.draft;
+        if (!d.name.trim()) return;
+        const rec = { id: "f" + Date.now() + Math.floor(Math.random() * 999), name: d.name.trim(), subtitle: d.sub.trim(), cohort: (d.cohort || "2026").trim(), linkedinUrl: d.url.trim() || "https://www.linkedin.com/in/placeholder", cardImage: d.img, fullArtImage: d.full };
+        this.save({ fellows: this.state.fellows.concat([rec]), draft: { name: "", sub: "", url: "", cohort: d.cohort, img: "", full: "" } });
+      },
+      bulkAdd: async e => {
+        const files = Array.from(e.target.files || []); if (!files.length) return;
+        const y = this.state.draft.cohort || "2026";
+        const recs = [];
+        for (const file of files) {
+          const d = await this.readImg(file);
+          recs.push({ id: "f" + Date.now() + Math.floor(Math.random() * 99999), name: file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "), subtitle: "", cohort: y, linkedinUrl: "https://www.linkedin.com/in/placeholder", cardImage: d, fullArtImage: "" });
+        }
+        this.save({ fellows: this.state.fellows.concat(recs) });
+        e.target.value = "";
+      },
+      adminPacks: adminYears.map(y => ({
+        label: y, art: s.packArt[y] || "", hasArt: !!s.packArt[y], noArt: !s.packArt[y],
+        wellStyle: Object.assign({}, wellBase, { width: 106, height: 148 }),
+        pick: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); const pa = Object.assign({}, this.state.packArt); pa[y] = d; this.save({ packArt: pa }); }
+      })),
+      fellowCount: s.fellows.length,
+      adminFellows: s.fellows.map(f => ({
+        name: f.name, meta: f.cohort + " · " + (f.fullArtImage ? "2 images" : "1 image"),
+        image: f.cardImage || "", hasImage: !!f.cardImage,
+        fullLabel: f.fullArtImage ? "Full ✓" : "+ Full art",
+        fullStyle: { flex: "none", height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid " + (f.fullArtImage ? "rgba(143,160,255,.5)" : "rgba(255,255,255,.12)"), background: f.fullArtImage ? "rgba(91,108,255,.14)" : "transparent", color: f.fullArtImage ? "#B9C4FF" : "#8B93AD", fontSize: 12, display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: "nowrap" },
+        pickFull: async e => {
+          const file = e.target.files[0]; if (!file) return;
+          const d = await this.readImg(file);
+          this.save({ fellows: this.state.fellows.map(x => x.id === f.id ? Object.assign({}, x, { fullArtImage: d }) : x) });
+        },
+        remove: () => this.save({ fellows: this.state.fellows.filter(x => x.id !== f.id) })
+      })),
+      exportData: () => {
+        const blob = new Blob([JSON.stringify({ fellows: s.fellows, packArt: s.packArt }, null, 2)], { type: "application/json" });
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "fellow-cards.json"; a.click();
+      },
+      saveCardsData: () => {
+        const blob = new Blob([JSON.stringify({ fellows: s.fellows, packArt: s.packArt }, null, 2)], { type: "application/json" });
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "cards-data.json"; a.click();
+      },
+      importData: e => {
+        const file = e.target.files[0]; if (!file) return;
+        const r = new FileReader();
+        r.onload = () => { try { const d = JSON.parse(r.result); this.save({ fellows: d.fellows || [], packArt: d.packArt || {} }); } catch (err) {} };
+        r.readAsText(file);
+      },
+      resetProgress: () => this.save({ opened: {}, fullSeen: {} })
+    };
+  }
+}
+</script>
+</body>
+</html>
