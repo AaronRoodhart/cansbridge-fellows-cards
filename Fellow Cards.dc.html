@@ -41,7 +41,6 @@
       <div style="display:flex;gap:8px">
         <button onClick="{{ toggleSound }}" style="width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">{{ soundIcon }}</button>
         <button onClick="{{ goGallery }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Gallery</button>
-        <button onClick="{{ goAdmin }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(143,160,255,.35);background:rgba(91,108,255,.14);color:#B9C4FF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(91,108,255,.28)">⚙️ Admin / Upload</button>
       </div>
     </div>
 
@@ -219,10 +218,7 @@
         <div style="font-size:20px;font-weight:600;letter-spacing:-.015em">Gallery</div>
         <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2">{{ galleryCount }}</div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button onClick="{{ goAdmin }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(143,160,255,.35);background:rgba(91,108,255,.14);color:#B9C4FF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(91,108,255,.28)">⚙️ Admin / Upload</button>
-        <button onClick="{{ goPacks }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Packs</button>
-      </div>
+      <button onClick="{{ goPacks }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Packs</button>
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -267,96 +263,6 @@
   </div>
 </sc-if>
 
-<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
-  <div style="width:100%;max-width:820px;min-height:100vh;display:flex;flex-direction:column;padding:26px 20px 60px;gap:26px">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:3px">
-        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8FA0FF">ADMIN · /#admin</div>
-        <div style="font-size:22px;font-weight:600;letter-spacing:-.015em">Cards &amp; packs</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onClick="{{ saveCardsData }}" style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(143,160,255,.6);background:rgba(91,108,255,.25);color:#DCE2FF;font-size:13px;font-weight:600;cursor:pointer">💾 Save cards-data.json</button>
-        <button onClick="{{ exportData }}" style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer">Export</button>
-        <label style="height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;cursor:pointer;display:flex;align-items:center">Import<input type="file" accept="application/json" onChange="{{ importData }}" style="display:none" /></label>
-        <button onClick="{{ goPacks }}" style="height:38px;padding:0 14px;border-radius:12px;border:none;background:#5B6CFF;color:#fff;font-size:13px;font-weight:600;cursor:pointer">View app</button>
-      </div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:16px;padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.02)">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">ADD A FELLOW</div>
-      <div style="display:flex;flex-wrap:wrap;gap:14px">
-        <label style="{{ wellA }}">
-          <sc-if value="{{ draftHasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ draftImg }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
-          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none">
-            <div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(143,160,255,.7)"></div>
-            <div style="font-size:12px;color:#B4BBD2;font-weight:500">Standard card</div>
-            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#7A83A2">5:7 image</div>
-          </div>
-          <input type="file" accept="image/*" onChange="{{ pickCard }}" style="display:none" />
-        </label>
-        <label style="{{ wellB }}">
-          <sc-if value="{{ draftHasFull }}" hint-placeholder-val="{{ false }}"><img src="{{ draftFull }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
-          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none">
-            <div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(143,160,255,.7)"></div>
-            <div style="font-size:12px;color:#B4BBD2;font-weight:500">Full-art version</div>
-            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#7A83A2">5:7 image</div>
-          </div>
-          <input type="file" accept="image/*" onChange="{{ pickFull }}" style="display:none" />
-        </label>
-        <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:10px">
-          <input value="{{ draftName }}" onInput="{{ setName }}" placeholder="Full name" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
-          <input value="{{ draftSub }}" onInput="{{ setSub }}" placeholder="Role, school or fun fact" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
-          <input value="{{ draftUrl }}" onInput="{{ setUrl }}" placeholder="https://linkedin.com/in/…" style="height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
-          <div style="display:flex;gap:10px">
-            <input value="{{ draftCohort }}" onInput="{{ setCohort }}" placeholder="Cohort year" style="width:130px;height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#E7EAF6;font-family:'Instrument Sans',sans-serif;font-size:15px;outline:none" />
-            <button onClick="{{ addFellow }}" style="flex:1;height:44px;border-radius:12px;border:none;background:#5B6CFF;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer">Add fellow</button>
-          </div>
-        </div>
-      </div>
-      <div style="font-size:13px;color:#7A83A2;line-height:1.5">You can also drop several images at once below — each becomes a draft card named from its filename.</div>
-      <label style="height:70px;border-radius:14px;border:1px dashed rgba(143,160,255,.45);background:rgba(91,108,255,.06);display:flex;align-items:center;justify-content:center;font-size:14px;color:#B4BBD2;cursor:pointer">
-        Bulk add standard cards
-        <input type="file" accept="image/*" multiple="{{ true }}" onChange="{{ bulkAdd }}" style="display:none" />
-      </label>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.02)">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">PACK ARTWORK</div>
-      <div style="display:flex;flex-wrap:wrap;gap:14px">
-        <sc-for list="{{ adminPacks }}" as="ap" hint-placeholder-count="1">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <label style="{{ ap.wellStyle }}">
-              <sc-if value="{{ ap.hasArt }}" hint-placeholder-val="{{ false }}"><img src="{{ ap.art }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
-              <sc-if value="{{ ap.noArt }}" hint-placeholder-val="{{ true }}"><div style="position:relative;font-size:12px;color:#B4BBD2">Upload art</div></sc-if>
-              <input type="file" accept="image/*" onChange="{{ ap.pick }}" style="display:none" />
-            </label>
-            <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2;text-align:center">{{ ap.label }}</div>
-          </div>
-        </sc-for>
-      </div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#5B6CFF">FELLOWS · {{ fellowCount }}</div>
-      <sc-for list="{{ adminFellows }}" as="f" hint-placeholder-count="3">
-        <div style="display:flex;align-items:center;gap:14px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.02)">
-          <div style="flex:none;width:40px;height:56px;border-radius:7px;overflow:hidden;position:relative;background:linear-gradient(165deg,#2B3480,#101636 70%)">
-            <sc-if value="{{ f.hasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ f.image }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
-          </div>
-          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
-            <div style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div>
-            <div style="font-family:'Space Mono',monospace;font-size:11px;color:#7A83A2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.meta }}</div>
-          </div>
-          <label style="{{ f.fullStyle }}">{{ f.fullLabel }}<input type="file" accept="image/*" onChange="{{ f.pickFull }}" style="display:none" /></label>
-          <button onClick="{{ f.remove }}" style="flex:none;width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#8B93AD;font-size:15px;cursor:pointer" style-hover="color:#FF8095;border-color:rgba(255,128,149,.4)">×</button>
-        </div>
-      </sc-for>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:6px">
-      <div style="font-size:13px;color:#5C6486;line-height:1.5">Stored in this browser. Export before switching devices.</div>
-      <button onClick="{{ resetProgress }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#8B93AD;font-size:13px;cursor:pointer">Reset opened progress</button>
-    </div>
   </div>
 </sc-if>
 
@@ -396,39 +302,25 @@ class Component extends DCLogic {
     });
   }
   async load() {
-    const loadFromStatic = async () => {
-      try {
-        const res = await fetch("cards-data.json");
-        if (res.ok) {
-          const d = await res.json();
-          if (d && ((d.fellows && d.fellows.length) || (d.packArt && Object.keys(d.packArt).length))) {
-            this.setState({ fellows: d.fellows || [], packArt: d.packArt || {} });
-            return true;
-          }
-        }
-      } catch (e) {}
-      return false;
-    };
+    let staticData = { fellows: this.seed(), packArt: {} };
+    try {
+      const res = await fetch("cards-data.json");
+      if (res.ok) {
+        const d = await res.json();
+        if (d && (d.fellows || []).length) staticData = d;
+      }
+    } catch (e) {}
 
     try {
       const db = await this.db();
       const tx = db.transaction("kv", "readonly").objectStore("kv").get(DB_KEY);
-      tx.onsuccess = async () => {
-        const d = tx.result;
-        if (d && ((d.fellows && d.fellows.length) || (d.packArt && Object.keys(d.packArt).length))) {
-          this.setState({ fellows: d.fellows, packArt: d.packArt || {}, opened: d.opened || {}, fullSeen: d.fullSeen || {} });
-        } else {
-          const loaded = await loadFromStatic();
-          if (!loaded) this.setState({ fellows: this.seed() });
-        }
+      tx.onsuccess = () => {
+        const d = tx.result || {};
+        this.setState({ fellows: staticData.fellows || [], packArt: staticData.packArt || {}, opened: d.opened || {}, fullSeen: d.fullSeen || {} });
       };
-      tx.onerror = async () => {
-        const loaded = await loadFromStatic();
-        if (!loaded) this.setState({ fellows: this.seed() });
-      };
+      tx.onerror = () => this.setState({ fellows: staticData.fellows || [], packArt: staticData.packArt || {} });
     } catch (e) {
-      const loaded = await loadFromStatic();
-      if (!loaded) this.setState({ fellows: this.seed() });
+      this.setState({ fellows: staticData.fellows || [], packArt: staticData.packArt || {} });
     }
   }
   seed() {
@@ -673,67 +565,7 @@ class Component extends DCLogic {
       detailImage: detailF ? (detailFull ? detailF.fullArtImage : detailF.cardImage || "") : "",
       detailHasImage: !!(detailF && (detailFull ? detailF.fullArtImage : detailF.cardImage)),
       detailNoImage: !(detailF && (detailFull ? detailF.fullArtImage : detailF.cardImage)),
-      closeDetail: () => this.setState({ detail: null }),
-
-      draftName: s.draft.name, draftSub: s.draft.sub, draftUrl: s.draft.url, draftCohort: s.draft.cohort,
-      draftImg: s.draft.img, draftFull: s.draft.full, draftHasImg: !!s.draft.img, draftHasFull: !!s.draft.full,
-      wellA: wellBase, wellB: Object.assign({}, wellBase, { borderStyle: s.draft.full ? "solid" : "dashed" }),
-      setName: e => this.setState({ draft: Object.assign({}, s.draft, { name: e.target.value }) }),
-      setSub: e => this.setState({ draft: Object.assign({}, s.draft, { sub: e.target.value }) }),
-      setUrl: e => this.setState({ draft: Object.assign({}, s.draft, { url: e.target.value }) }),
-      setCohort: e => this.setState({ draft: Object.assign({}, s.draft, { cohort: e.target.value }) }),
-      pickCard: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); this.setState({ draft: Object.assign({}, this.state.draft, { img: d }) }); },
-      pickFull: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); this.setState({ draft: Object.assign({}, this.state.draft, { full: d }) }); },
-      addFellow: () => {
-        const d = this.state.draft;
-        if (!d.name.trim()) return;
-        const rec = { id: "f" + Date.now() + Math.floor(Math.random() * 999), name: d.name.trim(), subtitle: d.sub.trim(), cohort: (d.cohort || "2026").trim(), linkedinUrl: d.url.trim() || "https://www.linkedin.com/in/placeholder", cardImage: d.img, fullArtImage: d.full };
-        this.save({ fellows: this.state.fellows.concat([rec]), draft: { name: "", sub: "", url: "", cohort: d.cohort, img: "", full: "" } });
-      },
-      bulkAdd: async e => {
-        const files = Array.from(e.target.files || []); if (!files.length) return;
-        const y = this.state.draft.cohort || "2026";
-        const recs = [];
-        for (const file of files) {
-          const d = await this.readImg(file);
-          recs.push({ id: "f" + Date.now() + Math.floor(Math.random() * 99999), name: file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "), subtitle: "", cohort: y, linkedinUrl: "https://www.linkedin.com/in/placeholder", cardImage: d, fullArtImage: "" });
-        }
-        this.save({ fellows: this.state.fellows.concat(recs) });
-        e.target.value = "";
-      },
-      adminPacks: adminYears.map(y => ({
-        label: y, art: s.packArt[y] || "", hasArt: !!s.packArt[y], noArt: !s.packArt[y],
-        wellStyle: Object.assign({}, wellBase, { width: 106, height: 148 }),
-        pick: async e => { const f = e.target.files[0]; if (!f) return; const d = await this.readImg(f); const pa = Object.assign({}, this.state.packArt); pa[y] = d; this.save({ packArt: pa }); }
-      })),
-      fellowCount: s.fellows.length,
-      adminFellows: s.fellows.map(f => ({
-        name: f.name, meta: f.cohort + " · " + (f.fullArtImage ? "2 images" : "1 image"),
-        image: f.cardImage || "", hasImage: !!f.cardImage,
-        fullLabel: f.fullArtImage ? "Full ✓" : "+ Full art",
-        fullStyle: { flex: "none", height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid " + (f.fullArtImage ? "rgba(143,160,255,.5)" : "rgba(255,255,255,.12)"), background: f.fullArtImage ? "rgba(91,108,255,.14)" : "transparent", color: f.fullArtImage ? "#B9C4FF" : "#8B93AD", fontSize: 12, display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: "nowrap" },
-        pickFull: async e => {
-          const file = e.target.files[0]; if (!file) return;
-          const d = await this.readImg(file);
-          this.save({ fellows: this.state.fellows.map(x => x.id === f.id ? Object.assign({}, x, { fullArtImage: d }) : x) });
-        },
-        remove: () => this.save({ fellows: this.state.fellows.filter(x => x.id !== f.id) })
-      })),
-      exportData: () => {
-        const blob = new Blob([JSON.stringify({ fellows: s.fellows, packArt: s.packArt }, null, 2)], { type: "application/json" });
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "fellow-cards.json"; a.click();
-      },
-      saveCardsData: () => {
-        const blob = new Blob([JSON.stringify({ fellows: s.fellows, packArt: s.packArt }, null, 2)], { type: "application/json" });
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "cards-data.json"; a.click();
-      },
-      importData: e => {
-        const file = e.target.files[0]; if (!file) return;
-        const r = new FileReader();
-        r.onload = () => { try { const d = JSON.parse(r.result); this.save({ fellows: d.fellows || [], packArt: d.packArt || {} }); } catch (err) {} };
-        r.readAsText(file);
-      },
-      resetProgress: () => this.save({ opened: {}, fullSeen: {} })
+      closeDetail: () => this.setState({ detail: null })
     };
   }
 }
