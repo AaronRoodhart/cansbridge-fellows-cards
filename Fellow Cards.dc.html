@@ -53,9 +53,9 @@
       <div style="flex:none;width:20px"></div>
       <sc-for list="{{ packList }}" as="p" hint-placeholder-count="2">
         <div onClick="{{ p.select }}" style="flex:none;width:212px;scroll-snap-align:center;display:flex;flex-direction:column;gap:14px;cursor:pointer">
-          <div style="position:relative;width:212px;height:297px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 60px -28px rgba(0,0,0,.9),0 0 0 1px rgba(143,160,255,.12) inset;animation:fcFloat 7s ease-in-out infinite">
+          <div style="position:relative;width:212px;height:297px;border-radius:16px;overflow:hidden;box-shadow:0 30px 60px -28px rgba(0,0,0,.9);animation:fcFloat 7s ease-in-out infinite">
             <sc-if value="{{ p.hasArt }}" hint-placeholder-val="{{ false }}">
-              <img src="{{ p.art }}" alt="Pack artwork" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+              <img src="{{ p.art }}" alt="Pack artwork" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain" />
             </sc-if>
             <sc-if value="{{ p.noArt }}" hint-placeholder-val="{{ true }}">
               <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
@@ -97,15 +97,19 @@
     <div onPointerDown="{{ tearDown }}" onPointerMove="{{ tearMove }}" onPointerUp="{{ tearUp }}" onPointerCancel="{{ tearUp }}" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
       <div style="position:relative;width:min(78vw,272px);aspect-ratio:5/7">
         <div style="{{ packTopStyle }}">
-          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          <sc-if value="{{ packNoArt }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          </sc-if>
           <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
-            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain" />
           </sc-if>
         </div>
         <div style="{{ packBottomStyle }}">
-          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          <sc-if value="{{ packNoArt }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+          </sc-if>
           <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
-            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain" />
           </sc-if>
           <div style="position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);animation:fcSheen 5s linear infinite;pointer-events:none"></div>
         </div>
@@ -130,16 +134,40 @@
 <sc-if value="{{ isDealing }}" hint-placeholder-val="{{ false }}">
   <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px;gap:16px;overflow:hidden">
     <div style="position:relative;width:min(78vw,272px);aspect-ratio:5/7;display:flex;align-items:center;justify-content:center">
-      <div style="position:absolute;inset:0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);animation:fcPackDrop .9s cubic-bezier(.4,0,.6,1) forwards">
-        <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+      <div style="position:absolute;inset:0;overflow:hidden;animation:fcPackDrop .9s cubic-bezier(.4,0,.6,1) forwards">
+        <sc-if value="{{ packNoArt }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#5B6CFF 0%,#2A2F86 45%,#0E1430 100%)"></div>
+        </sc-if>
         <sc-if value="{{ packHasArt }}" hint-placeholder-val="{{ false }}">
-          <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          <img src="{{ packArt }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain" />
         </sc-if>
       </div>
-      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#3A44B8,#141A3E 65%);border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 40px -16px #000;animation:fcDealL .62s cubic-bezier(.2,.85,.3,1) .04s both"></div>
-      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#3A44B8,#141A3E 65%);border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 40px -16px #000;animation:fcDealR .62s cubic-bezier(.2,.85,.3,1) .12s both"></div>
-      <div style="position:absolute;width:62%;aspect-ratio:5/7;border-radius:12px;background:linear-gradient(150deg,#4A55D8,#1A2050 65%);border:1px solid rgba(255,255,255,.3);box-shadow:0 26px 50px -18px #000;animation:fcDealC .62s cubic-bezier(.2,.85,.3,1) .2s both;display:flex;align-items:center;justify-content:center">
-        <div style="width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;color:rgba(255,255,255,.75)">CB</div>
+
+      <div style="position:absolute;width:64%;aspect-ratio:5/7;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.28);box-shadow:0 20px 40px -16px #000;animation:fcDealL .62s cubic-bezier(.2,.85,.3,1) .04s both;background:#101636">
+        <sc-if value="{{ deal0HasImg }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ deal0Img }}" alt="{{ deal0Name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+        </sc-if>
+        <sc-if value="{{ deal0NoImg }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;align-items:flex-end;padding:12px;font-size:13px;font-weight:600">{{ deal0Name }}</div>
+        </sc-if>
+      </div>
+
+      <div style="position:absolute;width:64%;aspect-ratio:5/7;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.28);box-shadow:0 20px 40px -16px #000;animation:fcDealR .62s cubic-bezier(.2,.85,.3,1) .12s both;background:#101636">
+        <sc-if value="{{ deal1HasImg }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ deal1Img }}" alt="{{ deal1Name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+        </sc-if>
+        <sc-if value="{{ deal1NoImg }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;align-items:flex-end;padding:12px;font-size:13px;font-weight:600">{{ deal1Name }}</div>
+        </sc-if>
+      </div>
+
+      <div style="position:absolute;width:64%;aspect-ratio:5/7;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.35);box-shadow:0 26px 50px -18px #000;animation:fcDealC .62s cubic-bezier(.2,.85,.3,1) .2s both;background:#101636">
+        <sc-if value="{{ deal2HasImg }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ deal2Img }}" alt="{{ deal2Name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+        </sc-if>
+        <sc-if value="{{ deal2NoImg }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;align-items:flex-end;padding:12px;font-size:13px;font-weight:600">{{ deal2Name }}</div>
+        </sc-if>
       </div>
     </div>
     <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:#8FA0FF">{{ dealingLabel }}</div>
@@ -447,7 +475,25 @@ class Component extends DCLogic {
     const pctTear = Math.max(0, Math.min(1, s.tear));
     const clipTop = "polygon(0 0,100% 0,100% 17%,0 17%)";
     const clipBot = "polygon(0 17%,100% 17%,100% 100%,0 100%)";
-    const base = { position: "absolute", inset: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(255,255,255,.14)" };
+    const hasArt = !!s.packArt[s.cohort];
+    const base = {
+      position: "absolute", inset: 0,
+      borderRadius: hasArt ? 0 : 14,
+      overflow: "hidden",
+      border: hasArt ? "none" : "1px solid rgba(255,255,255,.14)"
+    };
+
+    const c0 = s.deck[0] ? this.byId(s.deck[0].id) : null;
+    const c1 = s.deck[1] ? this.byId(s.deck[1].id) : c0;
+    const c2 = s.deck[2] ? this.byId(s.deck[2].id) : (c1 || c0);
+
+    const deal0Img = c0 ? (s.deck[0] && s.deck[0].full && c0.fullArtImage ? c0.fullArtImage : (c0.cardImage || "")) : "";
+    const deal1Img = c1 ? (s.deck[1] && s.deck[1].full && c1.fullArtImage ? c1.fullArtImage : (c1.cardImage || "")) : "";
+    const deal2Img = c2 ? (s.deck[2] && s.deck[2].full && c2.fullArtImage ? c2.fullArtImage : (c2.cardImage || "")) : "";
+
+    const deal0Name = c0 ? c0.name : "";
+    const deal1Name = c1 ? c1.name : "";
+    const deal2Name = c2 ? c2.name : "";
 
     const flipDeg = s.flipped ? 180 : 0;
     const isFull = cur && cur.c.full;
@@ -477,29 +523,22 @@ class Component extends DCLogic {
       };
     }).filter(Boolean);
 
-    const wellBase = { position: "relative", width: 118, height: 165, borderRadius: 12, border: "1px dashed rgba(143,160,255,.5)", background: "rgba(91,108,255,.07)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", flex: "none" };
-
-    const yearSet = new Set();
-    cohorts.forEach(c => yearSet.add(c.year));
-    Object.keys(s.packArt || {}).forEach(y => yearSet.add(y));
-    if (s.draft.cohort) yearSet.add(s.draft.cohort.trim());
-    if (yearSet.size === 0) yearSet.add("2026");
-    const adminYears = Array.from(yearSet).sort().reverse();
-
     return {
       isPacks: s.view === "packs", isOpen: s.view === "open", isReveal: s.view === "reveal",
       isSummary: s.view === "summary", isGallery: s.view === "gallery", isAdmin: s.view === "admin",
       hasPacks: cohorts.length > 0, noPacks: cohorts.length === 0,
-      packList, progressLine: total ? openedN + " of " + total + " fellows met" : "Add fellows at #admin",
+      packList, progressLine: total ? openedN + " of " + total + " fellows met" : "",
       soundIcon: s.sound ? "♪" : "♪̶",
       toggleSound: () => { const on = !s.sound; this.setState({ sound: on }, () => on && this.beep("tick")); },
-      goAdmin: () => { location.hash = "admin"; this.setState({ view: "admin" }); },
       goGallery: () => this.setState({ view: "gallery", galleryCohort: gc || s.cohort }),
       goPacks: () => { if (location.hash) location.hash = ""; this.setState({ view: "packs", detail: null }); },
       openFirst: () => this.startPack(cohorts[0].year),
 
       cohortTitle: s.cohort ? s.cohort + " Fellows" : "",
-      packArt: s.packArt[s.cohort] || "", packHasArt: !!s.packArt[s.cohort],
+      packArt: s.packArt[s.cohort] || "", packHasArt: hasArt, packNoArt: !hasArt,
+      deal0Img, deal0Name, deal0HasImg: !!deal0Img, deal0NoImg: !deal0Img,
+      deal1Img, deal1Name, deal1HasImg: !!deal1Img, deal1NoImg: !deal1Img,
+      deal2Img, deal2Name, deal2HasImg: !!deal2Img, deal2NoImg: !deal2Img,
       packTopStyle: Object.assign({}, base, { clipPath: clipTop, WebkitClipPath: clipTop, transform: "translateX(" + (pctTear * 118) + "%) rotate(" + (pctTear * 7) + "deg)", transition: s.dragging ? "none" : "transform .42s cubic-bezier(.2,.9,.25,1)", zIndex: 3 }),
       packBottomStyle: Object.assign({}, base, { clipPath: clipBot, WebkitClipPath: clipBot }),
       tearLineStyle: { position: "absolute", left: 0, right: 0, top: "17%", height: 2, background: "repeating-linear-gradient(90deg,rgba(255,255,255,.85) 0 6px,transparent 6px 12px)", opacity: 1 - pctTear, zIndex: 4, pointerEvents: "none" },
