@@ -324,10 +324,7 @@ class Component extends DCLogic {
     }
   }
   seed() {
-    return ["Amara Osei","Ravi Chandran","Jules Beaumont","Sena Tanaka","Nadia Haddad","Tobi Adeyemi","Clara Lindqvist","Mateo Rivas","Priya Raman","Owen Blackwood"].map((n, i) => ({
-      id: "seed" + i, name: n, subtitle: ["Waterloo · Robotics","UBC · Fintech","McGill · Bio","UofT · ML","Queen's · Climate","Western · Design","SFU · Health","Calgary · Space","Ottawa · Policy","Dal · Ocean tech"][i],
-      cohort: "2026", linkedinUrl: "https://www.linkedin.com/in/placeholder", cardImage: "", fullArtImage: "", demo: true
-    }));
+    return [];
   }
   save(patch) {
     this.setState(patch, () => {
