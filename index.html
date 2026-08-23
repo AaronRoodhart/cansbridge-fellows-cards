@@ -32,27 +32,33 @@
 <div style="min-height:100vh;background:radial-gradient(120% 80% at 50% -10%,#16204A 0%,#0A1024 55%);color:#E7EAF6;font-family:'Instrument Sans',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;overflow-x:hidden">
 
 <sc-if value="{{ isPacks }}" hint-placeholder-val="{{ true }}">
-  <div style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;padding:22px 20px 34px;gap:22px">
-    <div style="display:flex;align-items:center;justify-content:space-between">
+  <div style="position:relative;width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;padding:22px 20px 34px;gap:22px;overflow:hidden">
+    <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:38vh;background:linear-gradient(155deg,#8C9AFF 0%,#5B6CFF 60%,#3A48C8 100%)"></div>
+      <div style="position:absolute;top:32vh;left:-10%;width:120%;height:14px;background:#FFFFFF;transform:rotate(-7deg);box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
+      <div style="position:absolute;top:34vh;left:0;right:0;bottom:0;background:linear-gradient(180deg,#F0F4FC 0%,#E3EAF7 100%)"></div>
+    </div>
+
+    <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;flex-direction:column;gap:3px">
-        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8FA0FF">CANSBRIDGE</div>
-        <div style="font-size:19px;font-weight:600;letter-spacing:-.01em">Fellow Cards</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:#DDE3FF">CANSBRIDGE</div>
+        <div style="font-size:19px;font-weight:600;letter-spacing:-.01em;color:#FFFFFF">Fellow Cards</div>
       </div>
       <div style="display:flex;gap:8px">
-        <button onClick="{{ toggleSound }}" style="width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">{{ soundIcon }}</button>
-        <button onClick="{{ goGallery }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#C9D0E6;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Gallery</button>
+        <button onClick="{{ toggleSound }}" style="width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#FFFFFF;font-size:15px;cursor:pointer" style-hover="background:rgba(255,255,255,.2)">{{ soundIcon }}</button>
+        <button onClick="{{ goGallery }}" style="height:38px;padding:0 15px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#FFFFFF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(255,255,255,.2)">Gallery</button>
       </div>
     </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding-top:6px">
-      <h1 style="margin:0;font-size:34px;line-height:1.08;letter-spacing:-.03em;font-weight:600;text-wrap:balance">Meet the fellows</h1>
-      <p style="margin:0;font-size:15px;line-height:1.5;color:#98A0BA;max-width:34ch;text-wrap:pretty">Pick a cohort, tear the pack open, and swipe through everyone inside.</p>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding-top:2px">
+      <h1 style="margin:0;font-size:34px;line-height:1.08;letter-spacing:-.03em;font-weight:700;color:#FFFFFF;text-wrap:balance">Meet the fellows</h1>
+      <p style="margin:0;font-size:15px;line-height:1.5;color:rgba(255,255,255,.88);max-width:34ch;text-wrap:pretty">Pick a cohort, tear the pack open, and swipe through everyone inside.</p>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 0 24px">
+    <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 0 24px">
       <sc-for list="{{ packList }}" as="p" hint-placeholder-count="1">
         <div onClick="{{ p.select }}" style="display:flex;flex-direction:column;align-items:center;gap:26px;cursor:pointer">
-          <div style="position:relative;width:min(72vw,240px);aspect-ratio:5/7;filter:drop-shadow(0 24px 44px rgba(0,0,0,.65));animation:fcFloat 7s ease-in-out infinite">
+          <div style="position:relative;width:min(72vw,240px);aspect-ratio:5/7;filter:drop-shadow(0 24px 44px rgba(0,0,0,.35));animation:fcFloat 7s ease-in-out infinite">
             <sc-if value="{{ p.hasArt }}" hint-placeholder-val="{{ false }}">
               <img src="{{ p.art }}" alt="Pack artwork" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain" />
             </sc-if>
@@ -63,7 +69,7 @@
               </div>
             </sc-if>
           </div>
-          <button style="height:48px;padding:0 40px;border-radius:24px;border:none;background:#5B6CFF;color:#fff;font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 14px 30px -8px rgba(91,108,255,.85)" style-hover="background:#6D7CFF">Open</button>
+          <button style="height:52px;padding:0 44px;border-radius:26px;border:2px solid #FFFFFF;background:linear-gradient(135deg,#34E8B0 0%,#00C9A7 100%);color:#FFFFFF;font-family:'Instrument Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 12px 28px -6px rgba(0,201,167,.65),0 0 0 1px rgba(255,255,255,.5) inset" style-hover="background:linear-gradient(135deg,#42F5BD 0%,#05D9B4 100%)">Open</button>
         </div>
       </sc-for>
     </div>
@@ -226,15 +232,19 @@
       </sc-for>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:16px">
       <sc-for list="{{ galleryCards }}" as="g" hint-placeholder-count="9">
-        <div onClick="{{ g.open }}" style="display:flex;flex-direction:column;gap:8px;cursor:pointer">
-          <div style="{{ g.tileStyle }}">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div onClick="{{ g.open }}" style="{{ g.tileStyle }}">
             <sc-if value="{{ g.hasImage }}" hint-placeholder-val="{{ false }}"><img src="{{ g.image }}" alt="{{ g.name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /></sc-if>
             <sc-if value="{{ g.noImage }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%)"></div></sc-if>
             <div style="{{ g.ring }}"></div>
           </div>
-          <div style="font-size:12px;line-height:1.25;color:#B4BBD2;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ g.name }}</div>
+          <div onClick="{{ g.open }}" style="font-size:13px;font-weight:600;line-height:1.25;color:#E7EAF6;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;cursor:pointer">{{ g.name }}</div>
+          <a href="{{ g.linkedinUrl }}" target="_blank" rel="noopener" onClick="{{ stopProp }}" style="display:flex;align-items:center;justify-content:center;gap:5px;height:26px;padding:0 10px;border-radius:8px;background:rgba(91,108,255,.18);border:1px solid rgba(143,160,255,.4);color:#B9C4FF;font-size:11px;font-weight:600;text-decoration:none">
+            <span style="display:flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:3px;background:#B9C4FF;color:#0A1024;font-size:9px;font-weight:700;font-family:'Space Mono',monospace">in</span>
+            LinkedIn
+          </a>
         </div>
       </sc-for>
     </div>
@@ -468,8 +478,10 @@ class Component extends DCLogic {
       const isOpen = !!s.opened[f.id], full = s.fullSeen[f.id] && f.fullArtImage;
       const img = full ? f.fullArtImage : f.cardImage;
       return {
-        name: f.name, image: img || "", hasImage: !!img, noImage: !img,
-        tileStyle: { position: "relative", aspectRatio: "5/7", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,.12)", opacity: isOpen ? 1 : 0.32, filter: isOpen ? "none" : "grayscale(.7)", transition: "opacity .25s,filter .25s" },
+        name: f.name,
+        linkedinUrl: f.linkedinUrl || "https://www.linkedin.com/",
+        image: img || "", hasImage: !!img, noImage: !img,
+        tileStyle: { position: "relative", width: "100%", aspectRatio: "5/7", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,.12)", opacity: isOpen ? 1 : 0.32, filter: isOpen ? "none" : "grayscale(.7)", transition: "opacity .25s,filter .25s", cursor: "pointer" },
         ring: { position: "absolute", inset: 0, borderRadius: 10, boxShadow: full ? "0 0 0 1.5px rgba(185,196,255,.9) inset, 0 0 22px rgba(143,160,255,.5)" : "none", pointerEvents: "none" },
         open: () => this.setState({ detail: f.id })
       };
