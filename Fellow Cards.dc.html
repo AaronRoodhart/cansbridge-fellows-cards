@@ -167,8 +167,20 @@
 
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;gap:14px">
       <div onPointerDown="{{ cardDown }}" onPointerMove="{{ cardMove }}" onPointerUp="{{ cardUp }}" onPointerCancel="{{ cardUp }}" onClick="{{ cardTap }}" style="width:100%;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none;user-select:none;cursor:pointer">
-        <div style="position:absolute;width:min(70vw,258px);aspect-ratio:5/7;border-radius:16px;background:rgba(255,255,255,.05);transform:translateY(16px) scale(.9)"></div>
-        <div style="position:absolute;width:min(70vw,258px);aspect-ratio:5/7;border-radius:16px;background:rgba(255,255,255,.08);transform:translateY(8px) scale(.95)"></div>
+        <sc-if value="{{ hasNextCard }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ nextCardStyle }}">
+            <div style="{{ nextCardFrontStyle }}">
+              <sc-if value="{{ nextHasImg }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ nextImg }}" alt="{{ nextName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+              </sc-if>
+              <sc-if value="{{ nextNoImg }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px">
+                  <div style="font-size:22px;font-weight:600">{{ nextName }}</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
         <div style="{{ cardStyle }}">
           <div style="{{ cardFrontStyle }}">
             <sc-if value="{{ curHasImage }}" hint-placeholder-val="{{ false }}">
@@ -438,17 +450,12 @@ class Component extends DCLogic {
       border: hasArt ? "none" : "1px solid rgba(255,255,255,.14)"
     };
 
-    const c0 = s.deck[0] ? this.byId(s.deck[0].id) : null;
-    const c1 = s.deck[1] ? this.byId(s.deck[1].id) : c0;
-    const c2 = s.deck[2] ? this.byId(s.deck[2].id) : (c1 || c0);
-
-    const deal0Img = c0 ? (s.deck[0] && s.deck[0].full && c0.fullArtImage ? c0.fullArtImage : (c0.cardImage || "")) : "";
-    const deal1Img = c1 ? (s.deck[1] && s.deck[1].full && c1.fullArtImage ? c1.fullArtImage : (c1.cardImage || "")) : "";
-    const deal2Img = c2 ? (s.deck[2] && s.deck[2].full && c2.fullArtImage ? c2.fullArtImage : (c2.cardImage || "")) : "";
-
-    const deal0Name = c0 ? c0.name : "";
-    const deal1Name = c1 ? c1.name : "";
-    const deal2Name = c2 ? c2.name : "";
+    const nextC = s.deck[s.idx + 1];
+    const nextF = nextC ? this.byId(nextC.id) : null;
+    const nextFull = nextC && nextC.full && nextF && nextF.fullArtImage;
+    const nextImg = nextF ? (nextFull ? nextF.fullArtImage : (nextF.cardImage || "")) : "";
+    const nextName = nextF ? nextF.name : "";
+    const nextHasImg = !!nextImg;
 
     const flipDeg = s.flipped ? 180 : 0;
     const isFull = cur && cur.c.full;
@@ -515,12 +522,24 @@ class Component extends DCLogic {
       isDealing: s.view === "dealing",
       dealingLabel: "OPENING " + (s.cohort || ""),
       revealStageStyle: { width: "100%", maxWidth: 520, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", padding: "22px 20px 30px", gap: 16, background: isFull ? "radial-gradient(90% 55% at 50% 45%,rgba(91,108,255,.35),transparent 70%)" : "transparent", transition: "background .6s" },
+      hasNextCard: !!(s.deck[s.idx + 1]),
+      nextImg, nextName, nextHasImg, nextNoImg: !nextHasImg,
+      nextCardStyle: {
+        position: "absolute", width: "min(70vw,258px)", aspectRatio: "5/7",
+        transform: "scale(" + (0.94 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") translateY(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) translateX(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) rotate(" + (2.2 - Math.min(1, Math.abs(s.cardDrag) / 120) * 2.2) + "deg)",
+        opacity: 0.82 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.18,
+        transition: s.cardDrag ? "none" : "transform .38s cubic-bezier(.2,.9,.3,1), opacity .38s",
+        filter: "drop-shadow(0 16px 30px rgba(0,0,0,.6))",
+        zIndex: 1
+      },
+      nextCardFrontStyle: Object.assign({}, face, { border: nextFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       cardStyle: {
         position: "relative", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.03) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
+        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.035) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
         opacity: s.entering ? 0 : 1,
         transition: s.cardDrag ? "none" : "transform .42s cubic-bezier(.2,.9,.3,1.03),opacity .3s ease",
-        filter: isFull ? "drop-shadow(0 0 34px rgba(143,160,255,.6))" : "drop-shadow(0 24px 40px rgba(0,0,0,.7))"
+        filter: isFull ? "drop-shadow(0 0 34px rgba(143,160,255,.6))" : "drop-shadow(0 24px 40px rgba(0,0,0,.7))",
+        zIndex: 2
       },
       cardFrontStyle: Object.assign({}, face, { border: isFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       foilStyle: { position: "absolute", inset: 0, background: isFull ? "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 30%,rgba(255,255,255,.35) 48%,rgba(143,160,255,.3) 56%,transparent 72%)" : "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%)", pointerEvents: "none", mixBlendMode: "screen" },
