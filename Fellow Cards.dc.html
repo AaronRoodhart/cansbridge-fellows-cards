@@ -270,14 +270,13 @@
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:860},&quot;fullArtOdds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:15,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:1,&quot;max&quot;:60,&quot;step&quot;:1,&quot;unit&quot;:&quot;%&quot;,&quot;section&quot;:&quot;Rules&quot;}}">
-const DB_KEY = "fellowcards.v1";
+const DB_KEY = "fellowcards.v2";
 
 class Component extends DCLogic {
   state = {
     view: "packs", fellows: [], packArt: {}, opened: {}, fullSeen: {},
     cohort: null, deck: [], idx: 0, flipped: false, tear: 0, dragging: false,
-    cardDrag: 0, tilt: { x: 0, y: 0 }, sound: false, detail: null, galleryCohort: null,
-    draft: { name: "", sub: "", url: "", cohort: "2026", img: "", full: "" }
+    cardDrag: 0, tilt: { x: 0, y: 0 }, sound: false, detail: null, galleryCohort: null
   };
 
   componentDidMount() {
@@ -295,28 +294,38 @@ class Component extends DCLogic {
   // ---- storage ----
   db() {
     return new Promise((res, rej) => {
-      const r = indexedDB.open("fellowcards", 1);
+      const r = indexedDB.open("fellowcards", 2);
       r.onupgradeneeded = () => r.result.createObjectStore("kv");
       r.onsuccess = () => res(r.result);
       r.onerror = () => rej(r.error);
     });
   }
   async load() {
-    let staticData = { fellows: this.seed(), packArt: {} };
+    let staticData = { fellows: [], packArt: {} };
     try {
-      const res = await fetch("cards-data.json");
+      const res = await fetch("cards-data.json?v=" + Date.now());
       if (res.ok) {
         const d = await res.json();
         if (d && (d.fellows || []).length) staticData = d;
       }
     } catch (e) {}
 
+    const validIds = new Set((staticData.fellows || []).map(f => f.id));
+
     try {
       const db = await this.db();
       const tx = db.transaction("kv", "readonly").objectStore("kv").get(DB_KEY);
       tx.onsuccess = () => {
         const d = tx.result || {};
-        this.setState({ fellows: staticData.fellows || [], packArt: staticData.packArt || {}, opened: d.opened || {}, fullSeen: d.fullSeen || {} });
+        const opened = {}, fullSeen = {};
+        if (d.opened) Object.keys(d.opened).forEach(k => { if (validIds.has(k)) opened[k] = true; });
+        if (d.fullSeen) Object.keys(d.fullSeen).forEach(k => { if (validIds.has(k)) fullSeen[k] = true; });
+        this.setState({
+          fellows: staticData.fellows || [],
+          packArt: staticData.packArt || {},
+          opened,
+          fullSeen
+        });
       };
       tx.onerror = () => this.setState({ fellows: staticData.fellows || [], packArt: staticData.packArt || {} });
     } catch (e) {
