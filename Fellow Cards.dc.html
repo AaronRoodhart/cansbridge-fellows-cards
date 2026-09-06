@@ -166,36 +166,40 @@
     </div>
 
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;gap:14px">
-      <div onPointerDown="{{ cardDown }}" onPointerMove="{{ cardMove }}" onPointerUp="{{ cardUp }}" onPointerCancel="{{ cardUp }}" onClick="{{ cardTap }}" style="width:100%;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none;user-select:none;cursor:pointer">
-        <sc-if value="{{ hasNextCard }}" hint-placeholder-val="{{ false }}">
-          <div style="{{ nextCardStyle }}">
-            <div style="{{ nextCardFrontStyle }}">
-              <sc-if value="{{ nextHasImg }}" hint-placeholder-val="{{ false }}">
-                <img src="{{ nextImg }}" alt="{{ nextName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+      <div style="display:flex;align-items:center;justify-content:center;width:100%;gap:10px;position:relative">
+        <button onClick="{{ goPrev }}" style="{{ prevBtnStyle }}" title="Previous Card">‹</button>
+        <div onPointerDown="{{ cardDown }}" onPointerMove="{{ cardMove }}" onPointerUp="{{ cardUp }}" onPointerCancel="{{ cardUp }}" onClick="{{ cardTap }}" style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;touch-action:none;user-select:none;cursor:pointer">
+          <sc-if value="{{ hasNextCard }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ nextCardStyle }}">
+              <div style="{{ nextCardFrontStyle }}">
+                <sc-if value="{{ nextHasImg }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ nextImg }}" alt="{{ nextName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+                </sc-if>
+                <sc-if value="{{ nextNoImg }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px">
+                    <div style="font-size:22px;font-weight:600">{{ nextName }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+          <div style="{{ cardStyle }}">
+            <div style="{{ cardFrontStyle }}">
+              <sc-if value="{{ curHasImage }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ curImage }}" alt="{{ curName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
               </sc-if>
-              <sc-if value="{{ nextNoImg }}" hint-placeholder-val="{{ true }}">
-                <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px">
-                  <div style="font-size:22px;font-weight:600">{{ nextName }}</div>
+              <sc-if value="{{ curNoImage }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;gap:6px">
+                  <div style="font-size:22px;font-weight:600;line-height:1.15">{{ curName }}</div>
+                  <div style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.55)">{{ curSub }}</div>
                 </div>
               </sc-if>
+              <div style="{{ foilStyle }}"></div>
             </div>
           </div>
-        </sc-if>
-        <div style="{{ cardStyle }}">
-          <div style="{{ cardFrontStyle }}">
-            <sc-if value="{{ curHasImage }}" hint-placeholder-val="{{ false }}">
-              <img src="{{ curImage }}" alt="{{ curName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
-            </sc-if>
-            <sc-if value="{{ curNoImage }}" hint-placeholder-val="{{ true }}">
-              <div style="position:absolute;inset:0;background:linear-gradient(165deg,#2B3480,#101636 70%);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;gap:6px">
-                <div style="font-size:22px;font-weight:600;line-height:1.15">{{ curName }}</div>
-                <div style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.55)">{{ curSub }}</div>
-              </div>
-            </sc-if>
-            <div style="{{ foilStyle }}"></div>
-          </div>
+          <div style="{{ fullArtBadgeStyle }}">FULL ART</div>
         </div>
-        <div style="{{ fullArtBadgeStyle }}">FULL ART</div>
+        <button onClick="{{ goNext }}" style="{{ nextBtnStyle }}" title="Next Card">›</button>
       </div>
 
       <a href="{{ curLink }}" target="_blank" rel="noopener" onClick="{{ stopProp }}" style="display:flex;align-items:center;gap:8px;height:44px;padding:0 24px;border-radius:14px;background:rgba(91,108,255,.18);border:1px solid rgba(143,160,255,.45);color:#B9C4FF;font-size:14px;font-weight:600;z-index:10">
@@ -275,7 +279,7 @@ class Component extends DCLogic {
   state = {
     view: "packs", fellows: [], packArt: {}, opened: {}, fullSeen: {},
     cohort: null, deck: [], idx: 0, flipped: false, tear: 0, dragging: false,
-    cardDrag: 0, tilt: { x: 0, y: 0 }, sound: false, detail: null, galleryCohort: null
+    cardDrag: 0, throwing: false, tilt: { x: 0, y: 0 }, sound: false, detail: null, galleryCohort: null
   };
 
   componentDidMount() {
@@ -422,12 +426,40 @@ class Component extends DCLogic {
     this.beep(c.full ? "chime" : "tick");
     this.save({ opened: o, fullSeen: fs });
   }
+  prev() {
+    const { idx } = this.state;
+    if (idx <= 0) return;
+    this.setState({ idx: idx - 1, cardDrag: 0, throwing: false, entering: true, tilt: { x: 0, y: 0 } }, () => {
+      this.mark(idx - 1);
+      setTimeout(() => this.setState({ entering: false }), 30);
+    });
+  }
   next() {
     const { idx, deck, cohort } = this.state;
-    if (idx + 1 >= deck.length) { this.setState({ view: "gallery", galleryCohort: cohort, cardDrag: 0 }); return; }
-    this.setState({ idx: idx + 1, cardDrag: 0, entering: true, tilt: { x: 0, y: 0 } }, () => {
+    if (idx + 1 >= deck.length) { this.setState({ view: "gallery", galleryCohort: cohort, cardDrag: 0, throwing: false }); return; }
+    this.setState({ idx: idx + 1, cardDrag: 0, throwing: false, entering: true, tilt: { x: 0, y: 0 } }, () => {
       this.mark(idx + 1);
       setTimeout(() => this.setState({ entering: false }), 30);
+    });
+  }
+  throwNext() {
+    if (this._animating) return;
+    this._animating = true;
+    this.setState({ throwing: true, cardDrag: -480 }, () => {
+      setTimeout(() => {
+        this._animating = false;
+        this.next();
+      }, 190);
+    });
+  }
+  throwPrev() {
+    if (this.state.idx <= 0 || this._animating) return;
+    this._animating = true;
+    this.setState({ throwing: true, cardDrag: 480 }, () => {
+      setTimeout(() => {
+        this._animating = false;
+        this.prev();
+      }, 190);
     });
   }
   skipToEnd() {
@@ -551,24 +583,26 @@ class Component extends DCLogic {
       isDealing: s.view === "dealing",
       dealingLabel: "OPENING " + (s.cohort || ""),
       revealStageStyle: { width: "100%", maxWidth: 520, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", padding: "22px 20px 30px", gap: 16, background: isFull ? "radial-gradient(90% 55% at 50% 45%,rgba(91,108,255,.35),transparent 70%)" : "transparent", transition: "background .6s" },
+      hasPrevCard: s.idx > 0,
       hasNextCard: !!(s.deck[s.idx + 1]),
       nextImg, nextName, nextHasImg, nextNoImg: !nextHasImg,
       nextCardStyle: {
         position: "absolute", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "scale(" + (0.94 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") translateY(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) translateX(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) rotate(" + (2.2 - Math.min(1, Math.abs(s.cardDrag) / 120) * 2.2) + "deg)",
+        transform: "scale(" + (0.94 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") translateY(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) rotate(" + (2.2 - Math.min(1, Math.abs(s.cardDrag) / 120) * 2.2) + "deg)",
         opacity: 0.82 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.18,
-        transition: s.cardDrag ? "none" : "transform .38s cubic-bezier(.2,.9,.3,1), opacity .38s",
+        transition: s.cardDrag && !s.throwing ? "none" : "transform .38s cubic-bezier(.2,.9,.3,1), opacity .38s",
         filter: "drop-shadow(0 16px 30px rgba(0,0,0,.6))",
         zIndex: 1
       },
       nextCardFrontStyle: Object.assign({}, face, { border: nextFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       cardStyle: {
         position: "relative", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.035) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
-        opacity: s.entering ? 0 : 1,
-        transition: s.cardDrag ? "none" : "transform .42s cubic-bezier(.2,.9,.3,1.03),opacity .3s ease",
+        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.04) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
+        opacity: s.entering ? 0 : (s.throwing ? 0.15 : 1),
+        transition: s.cardDrag && !s.throwing ? "none" : (s.throwing ? "transform .19s cubic-bezier(.4,0,.2,1), opacity .19s ease" : "transform .38s cubic-bezier(.2,.9,.3,1.03), opacity .3s ease"),
         filter: isFull ? "drop-shadow(0 0 34px rgba(143,160,255,.6))" : "drop-shadow(0 24px 40px rgba(0,0,0,.7))",
-        zIndex: 2
+        zIndex: 2,
+        willChange: "transform, opacity"
       },
       cardFrontStyle: Object.assign({}, face, { border: isFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       foilStyle: { position: "absolute", inset: 0, background: isFull ? "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 30%,rgba(255,255,255,.35) 48%,rgba(143,160,255,.3) 56%,transparent 72%)" : "linear-gradient(" + (110 + s.tilt.x * 2) + "deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%)", pointerEvents: "none", mixBlendMode: "screen" },
@@ -580,19 +614,80 @@ class Component extends DCLogic {
       curHasImage: !!(cur && cur.f && (cur.c.full && cur.f.fullArtImage ? cur.f.fullArtImage : cur.f.cardImage)),
       curNoImage: !(cur && cur.f && (cur.c.full && cur.f.fullArtImage ? cur.f.fullArtImage : cur.f.cardImage)),
       footerStyle: { width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 14px", borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", opacity: s.entering ? 0 : 1, transform: s.entering ? "translateY(8px)" : "translateY(0)", transition: "opacity .35s,transform .35s" },
-      revealHint: s.idx + 1 >= s.deck.length ? "Swipe or tap to view gallery" : "Swipe or tap for the next card",
-      cardTap: () => { if (this._swiped) { this._swiped = false; return; } this.next(); },
-      cardDown: e => { this._cx = e.clientX; this._cdrag = true; },
+      revealHint: s.idx + 1 >= s.deck.length ? "Swipe left or tap Next to view gallery" : "Swipe left/right or tap arrows to flip through",
+      goPrev: (e) => { e && e.stopPropagation && e.stopPropagation(); this.throwPrev(); },
+      goNext: (e) => { e && e.stopPropagation && e.stopPropagation(); this.throwNext(); },
+      prevBtnStyle: {
+        width: 44, height: 44, borderRadius: "50%",
+        border: "1px solid " + (s.idx > 0 ? "rgba(255,255,255,.22)" : "rgba(255,255,255,.07)"),
+        background: s.idx > 0 ? "rgba(255,255,255,.08)" : "transparent",
+        color: s.idx > 0 ? "#E7EAF6" : "rgba(255,255,255,.2)",
+        fontSize: 24, fontWeight: "300",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: s.idx > 0 ? "pointer" : "default",
+        opacity: s.idx > 0 ? 1 : 0.25,
+        zIndex: 10, transition: "all .2s ease",
+        userSelect: "none"
+      },
+      nextBtnStyle: {
+        width: 44, height: 44, borderRadius: "50%",
+        border: "1px solid rgba(255,255,255,.22)",
+        background: "rgba(255,255,255,.08)",
+        color: "#E7EAF6",
+        fontSize: 24, fontWeight: "300",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "pointer",
+        zIndex: 10, transition: "all .2s ease",
+        userSelect: "none"
+      },
+      cardTap: () => {
+        if (this._swiped) { this._swiped = false; return; }
+        this.throwNext();
+      },
+      cardDown: e => {
+        if (this._animating) return;
+        this._cx = e.clientX;
+        this._cdrag = true;
+        this._startTime = Date.now();
+        if (e.currentTarget && e.currentTarget.setPointerCapture) {
+          try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      },
       cardMove: e => {
         const r = e.currentTarget.getBoundingClientRect();
         const tx = ((e.clientX - r.left) / r.width - 0.5) * 16, ty = ((e.clientY - r.top) / r.height - 0.5) * -12;
-        if (this._cdrag) this.setState({ cardDrag: e.clientX - this._cx, tilt: { x: tx, y: ty } });
-        else this.setState({ tilt: { x: tx, y: ty } });
+        if (this._cdrag && !s.throwing) {
+          const drag = e.clientX - this._cx;
+          this.setState({ cardDrag: drag, tilt: { x: tx, y: ty } });
+        } else {
+          this.setState({ tilt: { x: tx, y: ty } });
+        }
       },
-      cardUp: () => {
+      cardUp: e => {
+        if (!this._cdrag) return;
         this._cdrag = false;
-        if (Math.abs(s.cardDrag) > 70) { this._swiped = true; this.next(); }
-        else { this._swiped = Math.abs(s.cardDrag) > 6; this.setState({ cardDrag: 0 }); }
+        if (e.currentTarget && e.currentTarget.releasePointerCapture) {
+          try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+        const drag = s.cardDrag;
+        const dt = Date.now() - (this._startTime || Date.now());
+        const velocity = Math.abs(drag) / Math.max(1, dt);
+
+        if (drag < -45 || (drag < -18 && velocity > 0.25)) {
+          this._swiped = true;
+          this.throwNext();
+        } else if (drag > 45 || (drag > 18 && velocity > 0.25)) {
+          if (s.idx > 0) {
+            this._swiped = true;
+            this.throwPrev();
+          } else {
+            this._swiped = Math.abs(drag) > 6;
+            this.setState({ cardDrag: 0, throwing: false });
+          }
+        } else {
+          this._swiped = Math.abs(drag) > 6;
+          this.setState({ cardDrag: 0, throwing: false });
+        }
       },
       skipToEnd: () => this.skipToEnd(),
 
