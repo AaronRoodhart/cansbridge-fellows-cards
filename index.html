@@ -309,6 +309,11 @@ class Component extends DCLogic {
       }
     } catch (e) {}
 
+    (staticData.fellows || []).forEach(f => {
+      if (f.cardImage) { const img = new Image(); img.src = f.cardImage; }
+      if (f.fullArtImage) { const img = new Image(); img.src = f.fullArtImage; }
+    });
+
     const validIds = new Set((staticData.fellows || []).map(f => f.id));
 
     try {
