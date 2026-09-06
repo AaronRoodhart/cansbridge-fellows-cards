@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-  html, body { margin:0; background:#0A1024; overscroll-behavior:none; }
+  html, body { margin:0; background:#0A1024; overscroll-behavior:none; -webkit-overscroll-behavior:none; touch-action:manipulation; }
   * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
   a { color:#8FA0FF; text-decoration:none; }
   a:hover { color:#B9C4FF; }
@@ -644,29 +644,29 @@ class Component extends DCLogic {
       hasThirdCard: !!thirdC,
       thirdImg, thirdName, thirdHasImg, thirdNoImg: !thirdHasImg,
       thirdCardStyle: {
-        position: "absolute", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "scale(" + (0.88 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") translateY(" + (16 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) rotate(" + (-3 + Math.min(1, Math.abs(s.cardDrag) / 120) * 1.5) + "deg)",
+        position: "absolute", width: "min(68vw,248px)", aspectRatio: "5/7",
+        transform: "translate3d(0px, " + (16 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px, -40px) scale(" + (0.88 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") rotate(" + (-3 + Math.min(1, Math.abs(s.cardDrag) / 120) * 1.5) + "deg)",
         opacity: 0.5 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.3,
-        transition: s.cardDrag && !s.throwing ? "none" : "transform .38s cubic-bezier(.2,.9,.3,1), opacity .38s",
+        transition: s.cardDrag && !s.throwing ? "none" : "transform .35s cubic-bezier(.2,.9,.3,1), opacity .35s",
         filter: "drop-shadow(0 10px 20px rgba(0,0,0,.5))",
-        zIndex: 0
+        zIndex: 0, willChange: "transform, opacity"
       },
       thirdCardFrontStyle: Object.assign({}, face, { border: thirdFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       nextImg, nextName, nextHasImg, nextNoImg: !nextHasImg,
       nextCardStyle: {
-        position: "absolute", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "scale(" + (0.94 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") translateY(" + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px) rotate(" + (2.2 - Math.min(1, Math.abs(s.cardDrag) / 120) * 2.2) + "deg)",
+        position: "absolute", width: "min(68vw,248px)", aspectRatio: "5/7",
+        transform: "translate3d(0px, " + (8 - Math.min(1, Math.abs(s.cardDrag) / 120) * 8) + "px, -20px) scale(" + (0.94 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.06) + ") rotate(" + (2.2 - Math.min(1, Math.abs(s.cardDrag) / 120) * 2.2) + "deg)",
         opacity: 0.82 + Math.min(1, Math.abs(s.cardDrag) / 120) * 0.18,
-        transition: s.cardDrag && !s.throwing ? "none" : "transform .38s cubic-bezier(.2,.9,.3,1), opacity .38s",
+        transition: s.cardDrag && !s.throwing ? "none" : "transform .35s cubic-bezier(.2,.9,.3,1), opacity .35s",
         filter: "drop-shadow(0 16px 30px rgba(0,0,0,.6))",
-        zIndex: 1
+        zIndex: 1, willChange: "transform, opacity"
       },
       nextCardFrontStyle: Object.assign({}, face, { border: nextFull ? "1.5px solid rgba(185,196,255,.85)" : "1px solid rgba(255,255,255,.18)" }),
       cardStyle: {
-        position: "relative", width: "min(70vw,258px)", aspectRatio: "5/7",
-        transform: "translateX(" + s.cardDrag + "px) translateY(" + (s.entering ? 44 : 0) + "px) scale(" + (s.entering ? 0.86 : 1) + ") rotate(" + (s.cardDrag * 0.04) + "deg) perspective(900px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
-        opacity: s.entering ? 0 : (s.throwing ? 0.15 : 1),
-        transition: s.cardDrag && !s.throwing ? "none" : (s.throwing ? "transform .19s cubic-bezier(.4,0,.2,1), opacity .19s ease" : "transform .38s cubic-bezier(.2,.9,.3,1.03), opacity .3s ease"),
+        position: "relative", width: "min(68vw,248px)", aspectRatio: "5/7",
+        transform: "translate3d(" + s.cardDrag + "px, " + (s.entering ? 40 : 0) + "px, 0px) scale(" + (s.entering ? 0.88 : 1) + ") rotate(" + (s.cardDrag * 0.04) + "deg) perspective(1000px) rotateY(" + s.tilt.x + "deg) rotateX(" + s.tilt.y + "deg)",
+        opacity: s.entering ? 0 : (s.throwing ? 0.12 : 1),
+        transition: s.cardDrag && !s.throwing ? "none" : (s.throwing ? "transform .21s cubic-bezier(.25,1,.5,1), opacity .21s ease" : "transform .36s cubic-bezier(.175,.885,.32,1.275), opacity .3s ease"),
         filter: isFull ? "drop-shadow(0 0 34px rgba(143,160,255,.6))" : "drop-shadow(0 24px 40px rgba(0,0,0,.7))",
         zIndex: 2,
         willChange: "transform, opacity"
@@ -698,27 +698,27 @@ class Component extends DCLogic {
       goPrev: (e) => { e && e.stopPropagation && e.stopPropagation(); this.throwPrev(); },
       goNext: (e) => { e && e.stopPropagation && e.stopPropagation(); this.throwNext(); },
       prevBtnStyle: {
-        width: 44, height: 44, borderRadius: "50%",
+        width: 40, height: 40, borderRadius: "50%",
         border: "1px solid " + (s.idx > 0 ? "rgba(255,255,255,.22)" : "rgba(255,255,255,.07)"),
         background: s.idx > 0 ? "rgba(255,255,255,.08)" : "transparent",
         color: s.idx > 0 ? "#E7EAF6" : "rgba(255,255,255,.2)",
-        fontSize: 24, fontWeight: "300",
+        fontSize: 22, fontWeight: "300",
         display: "flex", alignItems: "center", justifyContent: "center",
         cursor: s.idx > 0 ? "pointer" : "default",
         opacity: s.idx > 0 ? 1 : 0.25,
         zIndex: 10, transition: "all .2s ease",
-        userSelect: "none"
+        userSelect: "none", touchAction: "manipulation"
       },
       nextBtnStyle: {
-        width: 44, height: 44, borderRadius: "50%",
+        width: 40, height: 40, borderRadius: "50%",
         border: "1px solid rgba(255,255,255,.22)",
         background: "rgba(255,255,255,.08)",
         color: "#E7EAF6",
-        fontSize: 24, fontWeight: "300",
+        fontSize: 22, fontWeight: "300",
         display: "flex", alignItems: "center", justifyContent: "center",
         cursor: "pointer",
         zIndex: 10, transition: "all .2s ease",
-        userSelect: "none"
+        userSelect: "none", touchAction: "manipulation"
       },
       cardTap: () => {
         if (this._swiped) { this._swiped = false; return; }
