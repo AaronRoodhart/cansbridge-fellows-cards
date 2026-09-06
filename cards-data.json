@@ -1,12 +1,30 @@
 {
   "fellows": [
     {
-      "id": "aaron-roodhart",
-      "name": "Aaron Roodhart",
+      "id": "henry",
+      "name": "Henry",
       "subtitle": "Cansbridge Fellow",
       "cohort": "2026",
-      "linkedinUrl": "https://www.linkedin.com/in/aaronroodhart/",
-      "cardImage": "Cards/Aaron_Basic_Card.png",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Henry.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "jordan",
+      "name": "Jordan",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Jordan.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "lauren",
+      "name": "Lauren",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Lauren.png",
       "fullArtImage": ""
     },
     {
@@ -19,6 +37,51 @@
       "fullArtImage": ""
     },
     {
+      "id": "maya",
+      "name": "Maya",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Maya.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "mischa",
+      "name": "Mischa",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Mischa.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "nathaniel",
+      "name": "Nathaniel",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Nathaniel.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "paida",
+      "name": "Paida",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Paida.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "pamimo",
+      "name": "Pamimo",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Pamimo.png",
+      "fullArtImage": ""
+    },
+    {
       "id": "sabrina",
       "name": "Sabrina",
       "subtitle": "Cansbridge Fellow",
@@ -28,12 +91,30 @@
       "fullArtImage": ""
     },
     {
+      "id": "taira",
+      "name": "Taira",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/Taira.png",
+      "fullArtImage": ""
+    },
+    {
       "id": "theo",
       "name": "Theo",
       "subtitle": "Cansbridge Fellow",
       "cohort": "2026",
       "linkedinUrl": "https://www.linkedin.com/",
       "cardImage": "Cards/Theo.png",
+      "fullArtImage": ""
+    },
+    {
+      "id": "brandon",
+      "name": "Brandon",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/",
+      "cardImage": "Cards/brandon.png",
       "fullArtImage": ""
     }
   ],
