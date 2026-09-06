@@ -1,6 +1,15 @@
 {
   "fellows": [
     {
+      "id": "aaron",
+      "name": "Aaron",
+      "subtitle": "Cansbridge Fellow",
+      "cohort": "2026",
+      "linkedinUrl": "https://www.linkedin.com/in/aaronroodhart/",
+      "cardImage": "Cards/Aaron.png",
+      "fullArtImage": ""
+    },
+    {
       "id": "henry",
       "name": "Henry",
       "subtitle": "Cansbridge Fellow",
